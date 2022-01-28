@@ -40,12 +40,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>cn.edu.xmu.privilegegateway</groupId>
-                <artifactId>annotation</artifactId>
-                <version>0.1.1-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
                 <groupId>cn.edu.xmu.wishes</groupId>
                 <artifactId>core</artifactId>
                 <version>1.0-SNAPSHOT</version>
