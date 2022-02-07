@@ -13,7 +13,7 @@ CREATE TABLE `wishes_user` (
                                    `email` varchar(255) DEFAULT NULL,
                                    `mobile` varchar(255) DEFAULT NULL,
                                    `student_id` varchar(255) DEFAULT NULL,
-                                   `be_deleted` tinyint(4) DEFAULT NULL,
+                                   `be_deleted` tinyint(4) DEFAULT '0',
                                    `creator_id` bigint(20) DEFAULT NULL,
                                    `creator_name` varchar(128) DEFAULT NULL,
                                    `modifier_id` bigint(20) DEFAULT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE `wishes_chat_record` (
                                `receiver_id` bigint(20) DEFAULT NULL,
                                `type` tinyint(4) DEFAULT NULL,
                                `content` int(8) DEFAULT NULL,
-                               `be_deleted` tinyint(4) DEFAULT NULL,
+                               `be_deleted` tinyint(4) DEFAULT '0',
                                `creator_id` bigint(20) DEFAULT NULL,
                                `creator_name` varchar(128) DEFAULT NULL,
                                `modifier_id` bigint(20) DEFAULT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `wishes_chat_record` (
                                PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `wishes_chat_record`;
+DROP TABLE IF EXISTS `wishes_task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wishes_task` (
@@ -54,7 +54,7 @@ CREATE TABLE `wishes_task` (
                                       `image_url` varchar(255) DEFAULT NULL,
                                       `price` varchar(128) DEFAULT NULL,
                                       `state` tinyint(4) DEFAULT NULL,
-                                      `be_deleted` tinyint(4) DEFAULT NULL,
+                                      `be_deleted` tinyint(4) DEFAULT '0',
                                       `creator_id` bigint(20) DEFAULT NULL,
                                       `creator_name` varchar(128) DEFAULT NULL,
                                       `modifier_id` bigint(20) DEFAULT NULL,
