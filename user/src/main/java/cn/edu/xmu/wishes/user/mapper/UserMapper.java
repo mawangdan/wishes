@@ -1,6 +1,6 @@
 package cn.edu.xmu.wishes.user.mapper;
 
-import cn.edu.xmu.wishes.user.model.User;
+import cn.edu.xmu.wishes.user.model.po.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

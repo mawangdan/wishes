@@ -1,6 +1,6 @@
 package cn.edu.xmu.wishes.user.service;
 
-import cn.edu.xmu.wishes.user.model.User;
+import cn.edu.xmu.wishes.user.model.po.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

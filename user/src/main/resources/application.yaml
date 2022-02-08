@@ -48,16 +48,16 @@ spring:
       validation-query: select 1
     sql-script-encoding: UTF-8
 
-#  redis:
-#    database: 0
-#    lettuce:
-#      pool:
-#        max-active: 100
-#        max-idle: 100
-#        min-idle: 0
-#        max-wait: -1
-#    timeout: 5000
-#    host: 172.16.2.172
+  redis:
+    database: 0
+    lettuce:
+      pool:
+        max-active: 100
+        max-idle: 100
+        min-idle: 0
+        max-wait: -1
+    timeout: 5000
+    host: localhost
 
 #mybatis:
 #  type-aliases-package: cn.edu.xmu.wishes.chat.model.po
@@ -66,5 +66,14 @@ spring:
 #    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #    map-underscore-to-camel-case: true
 
+mybatis-plus:
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+
 pagehelper:
   helper-dialect: mysql
+
+user:
+  login:
+    jwt:
+      expire: 3600

@@ -1,8 +1,8 @@
 package cn.edu.xmu.wishes.core.aop;
 
-import cn.edu.xmu.privilegegateway.annotation.util.JwtHelper;
-import cn.edu.xmu.privilegegateway.annotation.util.ResponseUtil;
-import cn.edu.xmu.privilegegateway.annotation.util.ReturnNo;
+import cn.edu.xmu.wishes.core.util.JwtHelper;
+import cn.edu.xmu.wishes.core.util.ResponseUtil;
+import cn.edu.xmu.wishes.core.util.ReturnNo;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -37,7 +37,7 @@ public class AuditAspect {
     private static final String LOG = "%s: %s";
 
     //Controller层切点
-    @Pointcut("@annotation(cn.edu.xmu.privilegegateway.annotation.aop.Audit)")
+    @Pointcut("@annotation(cn.edu.xmu.wishes.core.aop.Audit)")
     public void auditAspect() {
     }
 

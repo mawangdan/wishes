@@ -49,18 +49,19 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 0, message = "成功")
     })
-    @PostMapping("/customers")
+    @PostMapping("/users")
     public Object registerUser(@Validated @RequestBody UserVo vo,
                                BindingResult bindingResult)
     {
         Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
-        if(o!=null)
-        {
+        if(o!=null) {
             return o;
         }
+
         ReturnObject returnObject = userService.registerUser(vo);
-        if(returnObject.getData()==null)
+        if(returnObject.getCode() != ReturnNo.OK) {
             return Common.decorateReturnObject(returnObject);
+        }
         return new ResponseEntity(ResponseUtil.ok(returnObject.getData()), HttpStatus.CREATED);
     }
 
@@ -84,14 +85,8 @@ public class UserController {
             return new ResponseEntity(ResponseUtil.fail(returnObject.getCode(), returnObject.getErrmsg()), HttpStatus.FORBIDDEN);
         return Common.decorateReturnObject(returnObject);
     }
-    @ApiOperation(value = "用户登出")
-    @ApiImplicitParams(value={
-            @ApiImplicitParam(paramType = "header", dataType = "String", name = "authorization", value = "用户token", required = true),
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 0, message = "成功")
-    })
 
+    @ApiOperation(value = "用户登出")
     @Audit
     @GetMapping("/logout")
     public Object logout(@LoginUser Long userid)
@@ -118,80 +113,80 @@ public class UserController {
         ReturnObject returnObject = userService.getUserInfo(userid);
         return Common.decorateReturnObject(returnObject);
     }
-
-
-    /**
-     * 买家修改自己的信息
-     * @param userId
-     * @param vo
-     * @param bindingResult
-     * @return
-     */
-    @ApiOperation(value = "买家修改自己的信息")
-    @ApiImplicitParams(value={
-            @ApiImplicitParam(paramType = "header", dataType = "String", name = "authorization", value = "用户token", required = true),
-            @ApiImplicitParam(paramType = "body", dataType = "SimpleUserVo", name = "vo", value = "可修改的用户信息", required = true)
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 0, message = "成功")
-    })
-    @Audit
-    @PutMapping("/self")
-    public Object changeUserInfo(@LoginUser Long userId,
-                                 @Validated @RequestBody SimpleUserVo vo,
-                                 BindingResult bindingResult)
-    {
-        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
-        if(o!=null)
-        {
-            return o;
-        }
-        return Common.decorateReturnObject(userService.changeUserInfo(userId,vo));
-    }
-
-
-    @ApiOperation(value = "用户重置密码")
-    @ApiImplicitParams(value={
-            @ApiImplicitParam(paramType = "body", dataType = "PasswordResetVo", name = "vo", value = "用户名", required = true)
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 0, message = "成功")
-    })
-    @PutMapping("/password/reset")
-    public Object ResetPassword(@Validated @RequestBody PasswordResetVo vo,
-                                BindingResult bindingResult)
-    {
-        Object o = Common.processFieldErrors(bindingResult, httpServletResponse);
-        if(null!=o){
-            return o;
-        }
-        return Common.decorateReturnObject(userService.ResetUserPassword(vo));
-    }
-
-
-    /**
-     * 修改用户密码
-     * @param vo
-     * @param bindingResult
-     * @return
-     */
-    @ApiOperation(value = "用户修改密码")
-    @ApiImplicitParams(value={
-            @ApiImplicitParam(paramType = "body", dataType = "NewPasswordVo", name = "vo", value ="修改的密码", required = true)
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 0, message = "成功")
-    })
-    @PutMapping("/password")
-    public Object changePassword(@Validated @RequestBody NewPasswordVo vo,
-                                 BindingResult bindingResult)
-    {
-        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
-        if(o!=null)
-        {
-            return o;
-        }
-        return Common.decorateReturnObject(userService.changeUserPassword(vo));
-    }
+//
+//
+//    /**
+//     * 买家修改自己的信息
+//     * @param userId
+//     * @param vo
+//     * @param bindingResult
+//     * @return
+//     */
+//    @ApiOperation(value = "买家修改自己的信息")
+//    @ApiImplicitParams(value={
+//            @ApiImplicitParam(paramType = "header", dataType = "String", name = "authorization", value = "用户token", required = true),
+//            @ApiImplicitParam(paramType = "body", dataType = "SimpleUserVo", name = "vo", value = "可修改的用户信息", required = true)
+//    })
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 0, message = "成功")
+//    })
+//    @Audit
+//    @PutMapping("/self")
+//    public Object changeUserInfo(@LoginUser Long userId,
+//                                 @Validated @RequestBody SimpleUserVo vo,
+//                                 BindingResult bindingResult)
+//    {
+//        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
+//        if(o!=null)
+//        {
+//            return o;
+//        }
+//        return Common.decorateReturnObject(userService.changeUserInfo(userId,vo));
+//    }
+//
+//
+//    @ApiOperation(value = "用户重置密码")
+//    @ApiImplicitParams(value={
+//            @ApiImplicitParam(paramType = "body", dataType = "PasswordResetVo", name = "vo", value = "用户名", required = true)
+//    })
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 0, message = "成功")
+//    })
+//    @PutMapping("/password/reset")
+//    public Object ResetPassword(@Validated @RequestBody PasswordResetVo vo,
+//                                BindingResult bindingResult)
+//    {
+//        Object o = Common.processFieldErrors(bindingResult, httpServletResponse);
+//        if(null!=o){
+//            return o;
+//        }
+//        return Common.decorateReturnObject(userService.ResetUserPassword(vo));
+//    }
+//
+//
+//    /**
+//     * 修改用户密码
+//     * @param vo
+//     * @param bindingResult
+//     * @return
+//     */
+//    @ApiOperation(value = "用户修改密码")
+//    @ApiImplicitParams(value={
+//            @ApiImplicitParam(paramType = "body", dataType = "NewPasswordVo", name = "vo", value ="修改的密码", required = true)
+//    })
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 0, message = "成功")
+//    })
+//    @PutMapping("/password")
+//    public Object changePassword(@Validated @RequestBody NewPasswordVo vo,
+//                                 BindingResult bindingResult)
+//    {
+//        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
+//        if(o!=null)
+//        {
+//            return o;
+//        }
+//        return Common.decorateReturnObject(userService.changeUserPassword(vo));
+//    }
 }
 

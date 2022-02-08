@@ -429,6 +429,8 @@ public class Common {
 
             case RESOURCE_ID_OUTSCOPE:
             case  FILE_NO_WRITE_PERMISSION:
+            case AUTH_NO_RIGHT:
+            case AUTH_NEED_LOGIN:
                 // 403
                 return new ResponseEntity(
                         ResponseUtil.fail(returnObject.getCode(), returnObject.getErrmsg()),

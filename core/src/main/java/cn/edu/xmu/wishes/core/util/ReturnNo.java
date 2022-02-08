@@ -40,6 +40,9 @@ public enum ReturnNo {
     RESOURCE_ID_NOTEXIST(504,"操作的资源id不存在"),
 
     //状态码 403
+    //状态码 403
+    AUTH_NEED_LOGIN(704, "需要先登录"),
+    AUTH_NO_RIGHT(705, "无权限"),
     RESOURCE_ID_OUTSCOPE(505,"操作的资源id不是自己的对象"),
     FILE_NO_WRITE_PERMISSION(506,"目录文件夹没有写入的权限"),
 
