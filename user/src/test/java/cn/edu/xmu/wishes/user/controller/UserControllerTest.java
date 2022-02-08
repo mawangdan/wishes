@@ -31,7 +31,7 @@ class UserControllerTest {
 
     @BeforeEach
     void init() {
-        token = jwtHelper.createToken(1L, "zheng5d", 0L, 0, 36000);
+        token = jwtHelper.createToken(20L, "zheng5d", 0L, 0, 36000);
     }
 
     /*注册用户 错误的格式 为空格*/
@@ -156,11 +156,31 @@ class UserControllerTest {
 //    void registerusers() {
 //    }
 
-//    @Test
-//    void usersLogin() {
-//    }
-//
-//    @Test
-//    void getCustomerInfo() {
-//    }
+    @Test
+    void usersLogin() throws Exception {
+        String content="{\"userName\": \"zheng5d\",\"password\": \"123\"}";
+        String responseString=this.mvc.perform(post("/login")
+                .content(content)
+                .contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+        String expectedResponse = "{\"errno\":0,\"errmsg\":\"成功\"}";
+        System.out.println(responseString);
+        JSONAssert.assertEquals(expectedResponse, responseString, false);
+    }
+
+    @Test
+    void getCustomerInfo() throws Exception {
+        String content="{\"userName\": \"zheng5d\",\"password\": \"123\"}";
+        String responseString=this.mvc.perform(get("/self")
+                .content(content)
+                .contentType("application/json;charset=UTF-8")
+                .header(JwtHelper.LOGIN_TOKEN_KEY, token))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+        String expectedResponse = "{\"errno\":0,\"data\":{\"userName\":\"zheng5d\",\"password\":\"123\",\"sign\":null,\"address\":null,\"mobile\":\"2\",\"email\":\"2\"},\"errmsg\":\"成功\"}";
+        JSONAssert.assertEquals(expectedResponse, responseString, false);
+    }
 }
