@@ -24,29 +24,6 @@ spring:
 #      discovery:
 #        server-addr: 172.16.4.136
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/wishes?serverTimezone=GMT%2B8
-    username: dbuser
-    password: 12345678
-    druid:
-      initial-size: 3
-      min-idle: 3
-      max-active: 100
-      max-wait: 60000
-      stat-view-servlet:
-        login-username: admin
-        login-password: 123456
-        enabled: true
-        url-pattern: /druid/*
-
-      filter:
-        stat:
-          log-slow-sql: true
-          slow-sql-millis: 100
-      validation-query: select 1
-    sql-script-encoding: UTF-8
 
 #  redis:
 #    database: 0
@@ -65,6 +42,3 @@ spring:
 #  configuration:
 #    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #    map-underscore-to-camel-case: true
-
-pagehelper:
-  helper-dialect: mysql

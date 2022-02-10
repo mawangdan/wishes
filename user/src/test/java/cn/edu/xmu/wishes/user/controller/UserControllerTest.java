@@ -183,4 +183,18 @@ class UserControllerTest {
         String expectedResponse = "{\"errno\":0,\"data\":{\"userName\":\"zheng5d\",\"password\":\"123\",\"sign\":null,\"address\":null,\"mobile\":\"2\",\"email\":\"2\"},\"errmsg\":\"成功\"}";
         JSONAssert.assertEquals(expectedResponse, responseString, false);
     }
+
+    @Test
+    void logout() throws Exception {
+        String content="{\"userName\": \"zheng5d\",\"password\": \"123\"}";
+        String responseString=this.mvc.perform(get("/logout")
+                .content(content)
+                .contentType("application/json;charset=UTF-8")
+                .header(JwtHelper.LOGIN_TOKEN_KEY, "this is test"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+        String expectedResponse = "{\"errno\":704,\"errmsg\":\"需要先登录\"}";
+        JSONAssert.assertEquals(expectedResponse, responseString, false);
+    }
 }
