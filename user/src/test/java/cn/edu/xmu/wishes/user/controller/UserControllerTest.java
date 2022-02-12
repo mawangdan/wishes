@@ -19,7 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 class UserControllerTest {
     @Autowired
     private MockMvc mvc;
@@ -141,7 +140,7 @@ class UserControllerTest {
     /*注册用户*/
     @Test
     public void registerusers() throws Exception {
-        String content="{\"mobile\": \"13902345678\",\"email\": \"2345@qq.com\",\"userName\": \"zheng5dd\",\"password\": \"Ad!234\",\"name\": \"string\"}";
+        String content="{\"mobile\": \"13902345678\",\"email\": \"438225686@qq.com\",\"userName\": \"zheng5dd\",\"password\": \"Ad!234\",\"name\": \"string\"}";
         String responseString=this.mvc.perform(post("/users")
                 .content(content)
                 .contentType("application/json;charset=UTF-8"))
@@ -152,9 +151,19 @@ class UserControllerTest {
         JSONAssert.assertEquals(expectedResponse, responseString, false);
     }
 
-//    @Test
-//    void registerusers() {
-//    }
+    @Test
+    void verifyLoginUpCaptcha() throws Exception {
+        String content="{\"captcha\": \"rL7kUz\",\"email\": \"2345@qq.com\"}";
+        String responseString=this.mvc.perform(post("/users/captcha")
+                .content(content)
+                .contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+        String expectedResponse = "{\"errno\":0,\"errmsg\":\"成功\"}";
+        System.out.println(responseString);
+//        JSONAssert.assertEquals(expectedResponse, responseString, false);
+    }
 
     @Test
     void usersLogin() throws Exception {

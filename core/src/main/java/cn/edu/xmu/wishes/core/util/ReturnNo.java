@@ -61,6 +61,7 @@ public enum ReturnNo {
     CUSTOMER_EMAILEXIST(612,"邮箱已被注册"),
     CUSTOMER_NAMEEXIST(613,"用户名已被注册"),
     CUSTOMER_PASSWORDSAME(614,"不能与旧密码相同"),
+    CUSTOMER_CAPTCHA_ERROR(615,"验证码错误"),
 
     COUPON_NOTBEGIN(630,"未到优惠卷领取时间"),
     COUPON_FINISH(631,"优惠卷领罄"),

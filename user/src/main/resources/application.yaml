@@ -48,6 +48,27 @@ spring:
       validation-query: select 1
     sql-script-encoding: UTF-8
 
+  mail:
+    host: smtp.163.com
+    username: oomall2_4@163.com
+    password: HQQLBPJWWJRRLSXQ
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        imap:
+          ssl:
+            socketFactory:
+              rollback: false
+      from: oomall2_4@163.com
+    default-encoding: utf-8
+    protocol: smtps
+
   redis:
     database: 0
     lettuce:
@@ -77,3 +98,12 @@ user:
   login:
     jwt:
       expire: 3600
+    captcha:
+      expire: 3600
+
+  mail:
+    #邮件主题
+    subject: "【wishes】注册验证码"
+    #内容格式
+    format: "您的验证码是：%s 5分钟内有效"
+    from: oomall2_4@163.com

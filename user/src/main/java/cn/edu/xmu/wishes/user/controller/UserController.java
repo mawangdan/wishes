@@ -7,6 +7,7 @@ import cn.edu.xmu.wishes.core.util.Common;
 import cn.edu.xmu.wishes.core.util.ResponseUtil;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
+import cn.edu.xmu.wishes.user.model.vo.CaptchaVo;
 import cn.edu.xmu.wishes.user.model.vo.LoginVo;
 import cn.edu.xmu.wishes.user.model.vo.UserVo;
 import cn.edu.xmu.wishes.user.service.impl.UserServiceImpl;
@@ -43,12 +44,6 @@ public class UserController {
      * @return
      */
     @ApiOperation(value = "注册用户")
-    @ApiImplicitParams(value={
-            @ApiImplicitParam(paramType = "body", dataType = "UserVo", name = "vo", value = "用户信息", required = true)
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 0, message = "成功")
-    })
     @PostMapping("/users")
     public Object registerUser(@Validated @RequestBody UserVo vo,
                                BindingResult bindingResult)
@@ -63,6 +58,15 @@ public class UserController {
             return Common.decorateReturnObject(returnObject);
         }
         return new ResponseEntity(ResponseUtil.ok(returnObject.getData()), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/users/captcha")
+    public Object verifyLoginUpCaptcha(@Validated @RequestBody CaptchaVo captcha, BindingResult bindingResult) {
+        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
+        if(o!=null) {
+            return o;
+        }
+        return Common.decorateReturnObject(userService.verifyLoginUpCaptcha(captcha));
     }
 
 

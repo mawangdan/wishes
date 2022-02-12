@@ -4,8 +4,10 @@ import cn.edu.xmu.wishes.core.util.JwtHelper;
 import cn.edu.xmu.wishes.core.util.RedisUtil;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
+import cn.edu.xmu.wishes.user.config.MailSenderProperty;
 import cn.edu.xmu.wishes.user.model.po.User;
 import cn.edu.xmu.wishes.user.mapper.UserMapper;
+import cn.edu.xmu.wishes.user.model.vo.CaptchaVo;
 import cn.edu.xmu.wishes.user.model.vo.LoginVo;
 import cn.edu.xmu.wishes.user.model.vo.UserRetVo;
 import cn.edu.xmu.wishes.user.model.vo.UserVo;
@@ -15,14 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static cn.edu.xmu.wishes.core.util.Common.cloneVo;
 
@@ -37,14 +40,24 @@ import static cn.edu.xmu.wishes.core.util.Common.cloneVo;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     private final static String USER_KEY="user_%d";
+    private static final String CAPTCHA_KEY = "cap_%s";
 
     @Value("${user.login.jwt.expire}")
-    private Integer USER_EXPIRE_TIME;
+    private Integer USER_EXPIRE_TIME = 3600;
+
+    @Value("${user.login.captcha.expire}")
+    private Integer CAPTCHA_EXPIRE_TIME = 3600;
 
     private static JwtHelper jwtHelper = new JwtHelper();
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
+    private MailSenderProperty mailProperty;
 
     @Transactional(rollbackFor = Exception.class)
     public ReturnObject registerUser(UserVo userVo) {
@@ -69,14 +82,87 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 }
             }
 
-            // 保存到数据库
-            save(user);
+            String userEmail = user.getEmail();
+            String captcha = createCaptcha(user);
+            sendEmail(captcha, userEmail);
             return new ReturnObject();
         }
         catch (Exception e) {
             log.error("注册失败" + e.getMessage());
             return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
         }
+    }
+
+    public String createCaptcha(Serializable value)
+    {
+        try {
+            //随机生成验证码
+            String captcha = getRandomString(6);
+            while (redisUtil.hasKey(captcha)) {
+                captcha = getRandomString(6);
+            }
+
+            String key =  String.format(CAPTCHA_KEY, captcha);
+            redisUtil.set(key, value, CAPTCHA_EXPIRE_TIME);
+            return captcha;
+        } catch (Exception e) {
+            log.error("captcha" + e.getMessage());
+            return null;
+        }
+    }
+    private ReturnObject sendEmail(String message,String to)
+    {
+        try
+        {
+            //发送邮件(请在配置文件application.properties填写密钥)
+            mailProperty.setText(String.format(mailProperty.getFormat(),message));
+            SimpleMailMessage msg =new SimpleMailMessage();
+            msg.setText(mailProperty.getText());
+            msg.setFrom(mailProperty.getFrom());
+            msg.setSentDate(new Date());
+            msg.setSubject(mailProperty.getSubject());
+            msg.setTo(to);
+            mailSender.send(msg);
+            return new ReturnObject(ReturnNo.OK);
+        }catch (MailException e)
+        {
+            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+        }
+    }
+
+    public ReturnObject verifyLoginUpCaptcha(CaptchaVo captchaVo) {
+        try {
+            String key = String.format(CAPTCHA_KEY, captchaVo.getCaptcha());
+            //通过验证码取出id
+            if (!redisUtil.hasKey(key)) {
+                return new ReturnObject(ReturnNo.CUSTOMER_CAPTCHA_ERROR);
+            }
+
+            User user = (User) redisUtil.get(key);
+            if (user != null && user.getEmail().equals(captchaVo.getEmail())) {
+                //删除redis中的验证码
+                redisUtil.del(key);
+                // 保存到数据库
+                save(user);
+                return new ReturnObject();
+            }
+            return new ReturnObject(ReturnNo.CUSTOMER_CAPTCHA_ERROR);
+        } catch (Exception e) {
+            log.error("verify captcha" + e.getMessage());
+            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+        }
+
+    }
+
+    private String getRandomString(int length) {
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(str.length());
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
     }
 
     @Transactional(rollbackFor = Exception.class)
