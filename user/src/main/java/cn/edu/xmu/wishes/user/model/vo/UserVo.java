@@ -7,11 +7,14 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserVo {
+public class UserVo implements Serializable {
+    private static final long serialVersionUID = 8538221577807401236L;
+
     @NotBlank(message = "用户名不能为空")
     private String userName;
     @NotBlank(message = "密码不能为空")

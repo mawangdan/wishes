@@ -99,11 +99,11 @@ user:
     jwt:
       expire: 3600
     captcha:
-      expire: 3600
+      expire: 300
 
   mail:
     #邮件主题
     subject: "【wishes】注册验证码"
     #内容格式
     format: "您的验证码是：%s 5分钟内有效"
-    from: oomall2_4@163.com
+    from: "oomall2_4@163.com"

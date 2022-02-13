@@ -46,7 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private Integer USER_EXPIRE_TIME = 3600;
 
     @Value("${user.login.captcha.expire}")
-    private Integer CAPTCHA_EXPIRE_TIME = 3600;
+    private Integer CAPTCHA_EXPIRE_TIME = 600;
 
     private static JwtHelper jwtHelper = new JwtHelper();
 
@@ -61,29 +61,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Transactional(rollbackFor = Exception.class)
     public ReturnObject registerUser(UserVo userVo) {
-        User user = cloneVo(userVo, User.class);
         try {
             //判断是否可以注册
-            List<User> userList = lambdaQuery().eq(User::getMobile, user.getMobile())
-                    .or().eq(User::getEmail, user.getEmail())
-                    .or().eq(User::getUserName, user.getUserName()).list();
+            List<User> userList = lambdaQuery().eq(User::getMobile, userVo.getMobile())
+                    .or().eq(User::getEmail, userVo.getEmail())
+                    .or().eq(User::getUserName, userVo.getUserName()).list();
 
             if (userList.size() > 0) {
                 for(User user1 : userList) {
-                    if (user1.getUserName().equals(user.getUserName())) {
+                    if (user1.getUserName().equals(userVo.getUserName())) {
                         return new ReturnObject(ReturnNo.CUSTOMER_NAMEEXIST);
                     }
-                    else if (user1.getMobile().equals(user.getMobile())) {
+                    else if (user1.getMobile().equals(userVo.getMobile())) {
                         return new ReturnObject(ReturnNo.CUSTOMER_MOBILEEXIST);
                     }
-                    else if (user1.getEmail().equals(user.getEmail())) {
+                    else if (user1.getEmail().equals(userVo.getEmail())) {
                         return new ReturnObject(ReturnNo.CUSTOMER_EMAILEXIST);
                     }
                 }
             }
 
-            String userEmail = user.getEmail();
-            String captcha = createCaptcha(user);
+            String userEmail = userVo.getEmail();
+            String captcha = createCaptcha(userVo);
             sendEmail(captcha, userEmail);
             return new ReturnObject();
         }
@@ -138,7 +137,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 return new ReturnObject(ReturnNo.CUSTOMER_CAPTCHA_ERROR);
             }
 
-            User user = (User) redisUtil.get(key);
+            User user = cloneVo(redisUtil.get(key), User.class);
             if (user != null && user.getEmail().equals(captchaVo.getEmail())) {
                 //删除redis中的验证码
                 redisUtil.del(key);
