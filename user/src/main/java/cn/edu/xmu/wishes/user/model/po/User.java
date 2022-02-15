@@ -4,6 +4,7 @@ import cn.edu.xmu.wishes.core.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Date;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * <p>
@@ -22,10 +25,9 @@ import lombok.experimental.Accessors;
  * @since 2022-02-07
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("wishes_user")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
     private static final long serialVersionUID=1L;
 
     private String userName;
@@ -50,6 +52,45 @@ public class User extends BaseEntity {
 
     @TableLogic(value = "0", delval = "1")
     private Integer beDeleted;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return userName;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return state != Type.BANNED;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return beDeleted.equals(0);
+    }
+
+    public String getUserName() {
+        return userName;
+    }
 
     public enum Type {
         NORMAL(0, "正常"),

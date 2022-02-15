@@ -92,7 +92,7 @@ public class UserController {
 
     @ApiOperation(value = "用户登出")
     @Audit
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public Object logout(@LoginUser Long userid)
     {
 

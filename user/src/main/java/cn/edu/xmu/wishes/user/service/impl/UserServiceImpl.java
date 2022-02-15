@@ -21,6 +21,8 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scripting.support.ResourceScriptSource;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +60,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private MailSenderProperty mailProperty;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @Transactional(rollbackFor = Exception.class)
     public ReturnObject registerUser(UserVo userVo) {
@@ -166,7 +171,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Transactional(rollbackFor = Exception.class)
     public ReturnObject login(LoginVo loginVo) {
-        User user = lambdaQuery().eq(User::getUserName, loginVo.getUserName()).one();
+        User user = (User) userDetailsService.loadUserByUsername(loginVo.getUserName());
 
         if (user == null || !user.getPassword().equals(loginVo.getPassword())) {
             return new ReturnObject(ReturnNo.CUSTOMER_INVALID_ACCOUNT);
@@ -175,6 +180,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return new ReturnObject(ReturnNo.CUSTOMER_FORBIDDEN);
         }
 
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         return createToken(user);
     }
 
