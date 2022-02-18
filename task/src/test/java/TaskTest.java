@@ -1,9 +1,6 @@
 import cn.edu.xmu.wishes.task.TaskApplication;
 import cn.edu.xmu.wishes.task.mapper.TaskDraftMapper;
-import cn.edu.xmu.wishes.task.model.po.Task;
 import cn.edu.xmu.wishes.task.model.po.TaskDraft;
-import cn.edu.xmu.wishes.task.service.TaskService;
-import cn.edu.xmu.wishes.task.service.imp.TaskServiceImp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,5 +21,10 @@ public class TaskTest {
         int i = taskDraftMapper.updateById(taskDraft1);
         System.out.println(1);
         System.out.println(1);
+    }
+
+    @Test
+    void uploadTaskImage() throws Exception {
+
     }
 }

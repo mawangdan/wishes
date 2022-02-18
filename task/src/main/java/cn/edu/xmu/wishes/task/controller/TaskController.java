@@ -3,14 +3,18 @@ package cn.edu.xmu.wishes.task.controller;
 import cn.edu.xmu.wishes.core.util.Common;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
-import cn.edu.xmu.wishes.task.model.po.Task;
+import cn.edu.xmu.wishes.task.model.vo.TaskDraftVo;
+import cn.edu.xmu.wishes.task.service.imp.TaskDraftServiceImp;
 import cn.edu.xmu.wishes.task.service.imp.TaskServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -19,23 +23,30 @@ public class TaskController {
     @Autowired
     private TaskServiceImp taskService;
 
+    @Autowired
+    private TaskDraftServiceImp taskDraftService;
+
+    @Autowired
+    private HttpServletResponse httpServletResponse;
+
     private static final Integer IMAGE_MAX_SIZE=1000000;
 
-    @GetMapping("/task/add")
-    public Object createTask() {
-        Task task = new Task();
-        task.setInitiatorId(1L);
-        task.setDescription("测试一下");
-        taskService.save(task);
-        return Common.decorateReturnObject(new ReturnObject());
+    @PostMapping("/taskdraft/add")
+    public Object createTaskDraft(@Validated @RequestBody TaskDraftVo taskDraftVo, BindingResult bindingResult) {
+        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
+        if(o!=null) {
+            return o;
+        }
+
+        return Common.decorateReturnObject(taskDraftService.createTaskDraft(taskDraftVo));
     }
 
-    @GetMapping("/task/{id}")
-    public Object getTaskById(@PathVariable("id") Long id) {
-        return Common.decorateReturnObject(new ReturnObject(taskService.lambdaQuery().list()));
+    @GetMapping("/taskdraft/{id}")
+    public Object getTaskDraftById(@PathVariable("id") Long id) {
+        return Common.decorateReturnObject(taskDraftService.getTaskDraftById(id));
     }
 
-    @PostMapping("task/{id}/uploadImg")
+    @PostMapping("taskdraft/{id}/uploadImg")
     public Object uploadTaskImage(@PathVariable Long id, HttpServletRequest request) {
 
         //对输入数据进行合法性判断
@@ -48,7 +59,12 @@ public class TaskController {
         if (files.stream().anyMatch((multipartFile -> multipartFile.getSize() > IMAGE_MAX_SIZE))) {
             return Common.decorateReturnObject(new ReturnObject<>(ReturnNo.IMG_SIZE_EXCEED));
         }
-        return Common.decorateReturnObject(taskService.uploadTaskImage(id, files));
+        return Common.decorateReturnObject(taskDraftService.uploadTaskImage(id, files));
 
+    }
+
+    @GetMapping("/task/{id}")
+    public Object getTaskById(@PathVariable("id") Long id) {
+        return Common.decorateReturnObject(new ReturnObject(taskService.lambdaQuery().list()));
     }
 }
