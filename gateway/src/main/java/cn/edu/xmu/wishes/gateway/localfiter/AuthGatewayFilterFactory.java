@@ -16,7 +16,6 @@
 
 package cn.edu.xmu.wishes.gateway.localfiter;
 
-import cn.edu.xmu.privilegegateway.othergateway.microservice.PrivilegeService;
 import cn.edu.xmu.wishes.gateway.microservice.PrivilegeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,12 +56,12 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthF
 
 
     public AuthGatewayFilterFactory() {
-        super(cn.edu.xmu.privilegegateway.othergateway.localfilter.AuthFilter.Config.class);
+        super(AuthFilter.Config.class);
     }
 
     @Override
     public GatewayFilter apply(AuthFilter.Config config) {
-        AuthFilter authFilter = new cn.edu.xmu.privilegegateway.othergateway.localfilter.AuthFilter(config);
+        AuthFilter authFilter = new AuthFilter(config);
         authFilter.setPrivilegeService(privilegeService);
         authFilter.setJwtExpireTime(jwtExpireTime);
         authFilter.setRefreshJwtTime(refreshJwtTime);

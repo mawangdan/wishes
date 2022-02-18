@@ -158,6 +158,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.qiniu</groupId>
+                <artifactId>qiniu-java-sdk</artifactId>
+                <version>7.7.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-spring-boot-web-starter</artifactId>
                 <version>1.8.0</version>

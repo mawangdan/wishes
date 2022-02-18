@@ -63,3 +63,23 @@ CREATE TABLE `wishes_task` (
                                       `gmt_modified` datetime DEFAULT NULL,
                                       PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `wishes_task_draft`;
+CREATE TABLE `wishes_task_draft` (
+                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                               `task_id` bigint(20) DEFAULT '0',
+                               `initiator_id` bigint(20) DEFAULT NULL,
+                               `receiver_id` bigint(20) DEFAULT NULL,
+                               `type` tinyint(4) DEFAULT NULL,
+                               `description` varchar(255) DEFAULT NULL,
+                               `image_url` varchar(255) DEFAULT NULL,
+                               `price` varchar(128) DEFAULT NULL,
+                               `state` tinyint(4) DEFAULT '0',
+                               `creator_id` bigint(20) DEFAULT NULL,
+                               `creator_name` varchar(128) DEFAULT NULL,
+                               `modifier_id` bigint(20) DEFAULT NULL,
+                               `modifier_name` varchar(128) DEFAULT NULL,
+                               `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                               `gmt_modified` datetime DEFAULT NULL,
+                               PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

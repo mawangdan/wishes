@@ -1,6 +1,5 @@
 package cn.edu.xmu.wishes.task.model.po;
 
-import cn.edu.xmu.wishes.core.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -9,13 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@TableName("wishes_task")
-public class Task extends BaseEntity {
+@TableName("wishes_task_draft")
+public class TaskDraft {
+    private Long taskId;
+
     private Long initiatorId;
 
     private Long receiverId;
@@ -29,7 +28,4 @@ public class Task extends BaseEntity {
     private String price;
 
     private Byte state;
-
-    @TableLogic(value = "0", delval = "1")
-    private Byte beDeleted;
 }

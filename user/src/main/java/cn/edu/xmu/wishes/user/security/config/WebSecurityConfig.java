@@ -1,5 +1,6 @@
 package cn.edu.xmu.wishes.user.security.config;
 
+import cn.edu.xmu.wishes.user.security.UnauthorizedEntryPoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated()
             .and()
             .csrf().disable();
+
+        http.exceptionHandling().authenticationEntryPoint(new UnauthorizedEntryPoint());
     }
 
     /**
@@ -75,6 +78,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
 
 }
