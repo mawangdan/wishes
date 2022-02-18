@@ -22,27 +22,12 @@ public class StorageUtil {
      * @param fileName      文件索引名
      */
     public String store(InputStream inputStream, long contentLength, String contentType, String key) {
-        storage.store(inputStream, contentLength, contentType, key);
-
-        String url = generateUrl(key);
-        return url;
+        return storage.store(inputStream, contentLength, contentType, key);
     }
 
-//    private String generateKey(String originalFilename) {
-//        int index = originalFilename.lastIndexOf('.');
-//        String suffix = originalFilename.substring(index);
-//
-//        String key = null;
-//        LitemallStorage storageInfo = null;
-//
-//        do {
-//            key = CharUtil.getRandomString(20) + suffix;
-//            storageInfo = litemallStorageService.findByKey(key);
-//        }
-//        while (storageInfo != null);
-//
-//        return key;
-//    }
+    public String storeImg(InputStream inputStream, String key) {
+        return storage.store(inputStream, 0L, null, key);
+    }
 
     public Stream<Path> loadAll() {
         return storage.loadAll();
@@ -58,9 +43,5 @@ public class StorageUtil {
 
     public void delete(String keyName) {
         storage.delete(keyName);
-    }
-
-    private String generateUrl(String keyName) {
-        return storage.generateUrl(keyName);
     }
 }

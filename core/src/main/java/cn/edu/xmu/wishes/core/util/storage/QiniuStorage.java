@@ -7,6 +7,7 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
@@ -19,10 +20,8 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 @Data
+@Slf4j
 public class QiniuStorage implements Storage {
-
-    private final Log logger = LogFactory.getLog(QiniuStorage.class);
-
     private String endpoint;
     private String accessKey;
     private String secretKey;
@@ -35,7 +34,7 @@ public class QiniuStorage implements Storage {
      * 七牛云OSS对象存储简单上传实现
      */
     @Override
-    public void store(InputStream inputStream, long contentLength, String contentType, String keyName) {
+    public String  store(InputStream inputStream, long contentLength, String contentType, String keyName) {
         if (uploadManager == null) {
             if (auth == null) {
                 auth = Auth.create(accessKey, secretKey);
@@ -45,10 +44,11 @@ public class QiniuStorage implements Storage {
 
         try {
             String upToken = auth.uploadToken(bucketName);
-            Response put = uploadManager.put(inputStream, keyName, upToken, null, contentType);
-            System.out.println(put.bodyString());
+            Response response = uploadManager.put(inputStream, keyName, upToken, null, contentType);
+            return response.url();
         } catch (QiniuException ex) {
-            logger.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
+            return null;
         }
     }
 
@@ -71,7 +71,7 @@ public class QiniuStorage implements Storage {
                 return resource;
             }
         } catch (MalformedURLException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -87,12 +87,11 @@ public class QiniuStorage implements Storage {
         try {
             bucketManager.delete(bucketName, keyName);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 
-    @Override
-    public String generateUrl(String keyName) {
+    private String generateUrl(String keyName) {
         return endpoint + "/" + keyName;
     }
 }

@@ -19,7 +19,7 @@ public interface Storage {
      * @param contentType   文件类型
      * @param keyName       文件名
      */
-    void store(InputStream inputStream, long contentLength, String contentType, String keyName);
+    String store(InputStream inputStream, long contentLength, String contentType, String keyName);
 
     Stream<Path> loadAll();
 
@@ -28,6 +28,4 @@ public interface Storage {
     Resource loadAsResource(String keyName);
 
     void delete(String keyName);
-
-    String generateUrl(String keyName);
 }

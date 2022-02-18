@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @TableName("wishes_task")
 public class Task extends BaseEntity {
     private Long initiatorId;
@@ -21,6 +23,8 @@ public class Task extends BaseEntity {
     private Long receiverId;
 
     private Byte type;
+
+    private String title;
 
     private String description;
 

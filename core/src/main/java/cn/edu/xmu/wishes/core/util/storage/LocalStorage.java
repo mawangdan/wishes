@@ -1,6 +1,7 @@
 package cn.edu.xmu.wishes.core.util.storage;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
@@ -13,11 +14,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
  * 服务器本地对象存储服务
  */
+@Slf4j
 public class LocalStorage implements Storage {
 
 
@@ -52,11 +55,14 @@ public class LocalStorage implements Storage {
     }
 
     @Override
-    public void store(InputStream inputStream, long contentLength, String contentType, String keyName) {
+    public String store(InputStream inputStream, long contentLength, String contentType, String keyName) {
         try {
-            Files.copy(inputStream, rootLocation.resolve(keyName), StandardCopyOption.REPLACE_EXISTING);
+            String fileName = UUID.randomUUID() + "_" + keyName;
+            Files.copy(inputStream, rootLocation.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+            return fileName;
         } catch (IOException e) {
-            throw new RuntimeException("Failed to store file " + keyName, e);
+            log.error("Failed to store file " + keyName, e);
+            return null;
         }
     }
 
@@ -103,8 +109,7 @@ public class LocalStorage implements Storage {
         }
     }
 
-    @Override
-    public String generateUrl(String keyName) {
+    private String generateUrl(String keyName) {
 
         return address + keyName;
     }
