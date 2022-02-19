@@ -17,7 +17,8 @@ public class StorageTest {
     @Test
     void storage() throws FileNotFoundException {
         InputStream inputStream = new FileInputStream(new File("C:\\Users\\wl\\Pictures\\下载.jpg"));
-        storageUtil.store(inputStream, 0L, null, "test");
+        String url = storageUtil.store(inputStream, 0L, null, "test");
+        storageUtil.delete(url);
         System.out.println(1);
         System.out.println(1);
     }

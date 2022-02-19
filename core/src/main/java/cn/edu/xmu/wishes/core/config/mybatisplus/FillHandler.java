@@ -1,4 +1,4 @@
-package cn.edu.xmu.wishes.core.mybatisplus;
+package cn.edu.xmu.wishes.core.config.mybatisplus;
 
 import cn.edu.xmu.wishes.core.util.JwtHelper;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;

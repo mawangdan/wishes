@@ -64,6 +64,17 @@ public class Common {
         return sb.toString();
     }
 
+    public static StringBuilder concatString(String sep, List<String> fields) {
+        StringBuilder ret = new StringBuilder();
+
+        ret.append(fields.get(0));
+        for (int i = 1; i < fields.size(); i++) {
+            ret.append(sep);
+            ret.append(fields.get(i));
+        }
+        return ret;
+    }
+
     /**
      * 处理BindingResult的错误
      * @param bindingResult

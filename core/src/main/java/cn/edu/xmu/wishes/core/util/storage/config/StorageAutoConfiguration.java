@@ -1,9 +1,6 @@
 package cn.edu.xmu.wishes.core.util.storage.config;
 
-import cn.edu.xmu.wishes.core.util.storage.LocalStorage;
-import cn.edu.xmu.wishes.core.util.storage.QiniuStorage;
-import cn.edu.xmu.wishes.core.util.storage.Storage;
-import cn.edu.xmu.wishes.core.util.storage.StorageUtil;
+import cn.edu.xmu.wishes.core.util.storage.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +24,9 @@ public class StorageAutoConfiguration {
         if (active.equals("local")) {
             storageUtil.setStorage(localStorage());
         }
+        else if (active.equals("webdav")) {
+            storageUtil.setStorage(webDavStorage());
+        }
         else if (active.equals("qiniu")) {
             storageUtil.setStorage(qiniuStorage());
         } else {
@@ -44,6 +44,18 @@ public class StorageAutoConfiguration {
         localStorage.setAddress(local.getAddress());
         localStorage.setStoragePath(local.getStoragePath());
         return localStorage;
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "wishes.storage", name = "active", havingValue = "webdav")
+    public WebDavStorage webDavStorage() {
+        WebDavStorage webDavStorage = new WebDavStorage();
+        StorageProperties.Webdav webdav = this.properties.getWebdav();
+        webDavStorage.setUrl(webdav.getUrl());
+        webDavStorage.setDirectory(webdav.getDirectory());
+        webDavStorage.setUsername(webdav.getUsername());
+        webDavStorage.setPassword(webdav.getPassword());
+        return webDavStorage;
     }
 
     @Bean
