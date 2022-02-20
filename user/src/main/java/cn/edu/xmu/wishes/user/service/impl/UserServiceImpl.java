@@ -5,12 +5,13 @@ import cn.edu.xmu.wishes.core.util.RedisUtil;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.user.config.MailSenderProperty;
-import cn.edu.xmu.wishes.user.model.po.User;
 import cn.edu.xmu.wishes.user.mapper.UserMapper;
+import cn.edu.xmu.wishes.user.model.po.User;
 import cn.edu.xmu.wishes.user.model.vo.CaptchaVo;
 import cn.edu.xmu.wishes.user.model.vo.LoginVo;
 import cn.edu.xmu.wishes.user.model.vo.UserRetVo;
 import cn.edu.xmu.wishes.user.model.vo.UserVo;
+import cn.edu.xmu.wishes.user.security.userdetails.UserDetailsServiceImpl;
 import cn.edu.xmu.wishes.user.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ import static cn.edu.xmu.wishes.core.util.Common.cloneVo;
  * @author bwly
  * @since 2022-02-07
  */
-@Service
+@Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     private final static String USER_KEY="user_%d";
     private static final String CAPTCHA_KEY = "cap_%s";

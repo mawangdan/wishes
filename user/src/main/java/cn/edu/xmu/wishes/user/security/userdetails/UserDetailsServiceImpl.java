@@ -1,4 +1,4 @@
-package cn.edu.xmu.wishes.user.service.impl;
+package cn.edu.xmu.wishes.user.security.userdetails;
 
 import cn.edu.xmu.wishes.user.mapper.UserMapper;
 import cn.edu.xmu.wishes.user.model.po.User;
@@ -8,12 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
-@Service
+@Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;

@@ -12,6 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 @Component
 @Slf4j
@@ -55,5 +56,6 @@ public class FillHandler implements MetaObjectHandler {
         log.info("start update fill ....");
         this.strictUpdateFill(metaObject, "modifierId", () -> fillInfo.getUserId(), Long.class);
         this.strictUpdateFill(metaObject, "modifierName", () -> fillInfo.getUserName(), String.class);
+        this.strictUpdateFill(metaObject, "gmtModified", () -> LocalDateTime.now(), LocalDateTime.class);
     }
 }

@@ -18,8 +18,11 @@ public class StorageAutoConfiguration {
 
     @Bean
     public StorageUtil storageUtil() {
-        StorageUtil storageUtil = new StorageUtil();
         String active = this.properties.getActive();
+        if (active == null) {
+            return null;
+        }
+        StorageUtil storageUtil = new StorageUtil();
         storageUtil.setActive(active);
         if (active.equals("local")) {
             storageUtil.setStorage(localStorage());
