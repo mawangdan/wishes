@@ -112,7 +112,6 @@ CREATE TABLE `wishes_auth_role` (
                              `id` bigint NOT NULL AUTO_INCREMENT,
                              `name` varchar(64) NOT NULL COMMENT '角色名称',
                              `descr` varchar(500) DEFAULT NULL COMMENT '角色描述',
-                             `depart_id` bigint NOT NULL DEFAULT '0',
                              `state` tinyint DEFAULT '0',
                              `creator_id` bigint DEFAULT NULL COMMENT '创建用户id',
                              `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
