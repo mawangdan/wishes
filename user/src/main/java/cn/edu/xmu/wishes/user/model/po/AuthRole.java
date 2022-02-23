@@ -1,22 +1,28 @@
 package cn.edu.xmu.wishes.user.model.po;
 
+import cn.edu.xmu.wishes.core.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Data
 @Accessors(chain = true)
 @TableName("wishes_auth_role")
-public class AuthRole {
+public class AuthRole extends BaseEntity implements GrantedAuthority {
     private String name;
     private String descr;
-    private List<AuthPrivilege> privilegeList;
+//    private List<AuthPrivilege> privilegeList;
     private Type state;
+
+    @Override
+    public String getAuthority() {
+        return name;
+    }
 
     public enum Type {
         NORMAL(0, "正常"),

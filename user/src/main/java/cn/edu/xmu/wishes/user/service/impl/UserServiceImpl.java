@@ -7,13 +7,12 @@ import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.user.config.MailSenderProperty;
 import cn.edu.xmu.wishes.user.mapper.UserMapper;
 import cn.edu.xmu.wishes.user.model.po.User;
-import cn.edu.xmu.wishes.user.model.vo.CaptchaVo;
-import cn.edu.xmu.wishes.user.model.vo.LoginVo;
-import cn.edu.xmu.wishes.user.model.vo.UserRetVo;
-import cn.edu.xmu.wishes.user.model.vo.UserVo;
+import cn.edu.xmu.wishes.user.model.vo.*;
+import cn.edu.xmu.wishes.user.security.userdetails.SecurityUser;
 import cn.edu.xmu.wishes.user.security.userdetails.UserDetailsServiceImpl;
 import cn.edu.xmu.wishes.user.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -172,7 +171,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Transactional(rollbackFor = Exception.class)
     public ReturnObject login(LoginVo loginVo) {
-        User user = (User) userDetailsService.loadUserByUsername(loginVo.getUserName());
+        SecurityUser securityUser = (SecurityUser) userDetailsService.loadUserByUsername(loginVo.getUserName());
+        if (securityUser == null) {
+            return new ReturnObject(ReturnNo.CUSTOMER_INVALID_ACCOUNT);
+        }
+
+        User user = securityUser.getUser();
 
         if (user == null || !user.getPassword().equals(loginVo.getPassword())) {
             return new ReturnObject(ReturnNo.CUSTOMER_INVALID_ACCOUNT);
@@ -181,9 +185,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return new ReturnObject(ReturnNo.CUSTOMER_FORBIDDEN);
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, securityUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         return createToken(user);
+//        return null;
     }
 
     private ReturnObject createToken(User user) {
@@ -248,6 +253,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return new ReturnObject(cloneVo(user, UserRetVo.class));
         } catch (Exception e) {
             log.error("logout " + e.getMessage());
+            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ReturnObject changeUserInfo(Long userId, SimpleUserVo vo) {
+        try {
+            User user = new User();
+            BeanUtils.copyProperties(vo, user);
+            user.setId(userId);
+            this.updateById(user);
+            return new ReturnObject();
+        } catch (Exception e) {
+            log.error("changeUserInfo " + e.getMessage());
             return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
         }
     }

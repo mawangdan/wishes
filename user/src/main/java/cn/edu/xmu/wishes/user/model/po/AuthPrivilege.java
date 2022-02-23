@@ -2,11 +2,13 @@ package cn.edu.xmu.wishes.user.model.po;
 
 import cn.edu.xmu.wishes.core.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -17,6 +19,13 @@ public class AuthPrivilege extends BaseEntity {
     private String url;
     private RequestType requestType;
     private Type state;
+
+    @TableField(exist = false)
+    private List<AuthRole> roleList;
+
+    public String getPrivilege() {
+        return requestType.getDescription() + ":" + url;
+    }
 
     public enum RequestType {
         GET(0, "GET"),

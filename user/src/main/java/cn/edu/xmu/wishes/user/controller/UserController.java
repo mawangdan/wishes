@@ -9,17 +9,25 @@ import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.user.model.vo.CaptchaVo;
 import cn.edu.xmu.wishes.user.model.vo.LoginVo;
+import cn.edu.xmu.wishes.user.model.vo.SimpleUserVo;
 import cn.edu.xmu.wishes.user.model.vo.UserVo;
 import cn.edu.xmu.wishes.user.service.impl.UserServiceImpl;
 import io.swagger.annotations.*;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
+import java.util.Map;
 
 /**
  * <p>
@@ -37,6 +45,24 @@ public class UserController {
     
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private TokenEndpoint tokenEndpoint;
+
+    @GetMapping("/test")
+    public Object test(Authentication authentication)
+    {
+        return ResponseUtil.ok("test");
+    }
+
+    @PostMapping("/token")
+    public Object postAccessToken(
+            @ApiIgnore Principal principal,
+            @ApiIgnore @RequestParam Map<String, String> parameters
+    ) throws HttpRequestMethodNotSupportedException {
+        OAuth2AccessToken accessToken = tokenEndpoint.postAccessToken(principal, parameters).getBody();
+        return ResponseUtil.ok(accessToken);
+    }
     /**
      * 注册用户
      * @param vo
@@ -100,7 +126,7 @@ public class UserController {
     }
     /**
      * 用户查询信息
-     * @param userid
+     * @param userId
      * @return
      */
     @ApiOperation(value = "用户查询自己信息")
@@ -112,41 +138,27 @@ public class UserController {
     })
     @Audit
     @GetMapping("/self")
-    public Object getCustomerInfo(@LoginUser Long userid)
+    public Object getCustomerInfo(@LoginUser Long userId)
     {
-        ReturnObject returnObject = userService.getUserInfo(userid);
+        ReturnObject returnObject = userService.getUserInfo(userId);
         return Common.decorateReturnObject(returnObject);
     }
-//
-//
-//    /**
-//     * 买家修改自己的信息
-//     * @param userId
-//     * @param vo
-//     * @param bindingResult
-//     * @return
-//     */
-//    @ApiOperation(value = "买家修改自己的信息")
-//    @ApiImplicitParams(value={
-//            @ApiImplicitParam(paramType = "header", dataType = "String", name = "authorization", value = "用户token", required = true),
-//            @ApiImplicitParam(paramType = "body", dataType = "SimpleUserVo", name = "vo", value = "可修改的用户信息", required = true)
-//    })
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 0, message = "成功")
-//    })
-//    @Audit
-//    @PutMapping("/self")
-//    public Object changeUserInfo(@LoginUser Long userId,
-//                                 @Validated @RequestBody SimpleUserVo vo,
-//                                 BindingResult bindingResult)
-//    {
-//        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
-//        if(o!=null)
-//        {
-//            return o;
-//        }
-//        return Common.decorateReturnObject(userService.changeUserInfo(userId,vo));
-//    }
+
+
+    @ApiOperation(value = "用户修改自己的信息")
+    @Audit
+    @PutMapping("/self")
+    public Object changeUserInfo(@LoginUser Long userId,
+                                 @Validated @RequestBody SimpleUserVo vo,
+                                 BindingResult bindingResult)
+    {
+        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
+        if(o!=null)
+        {
+            return o;
+        }
+        return Common.decorateReturnObject(userService.changeUserInfo(userId,vo));
+    }
 //
 //
 //    @ApiOperation(value = "用户重置密码")

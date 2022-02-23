@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ import java.util.List;
  * @date Created in 2020/11/13 22:40
  * modifiedBy Ming Qiu 2021/12/03 12:24
  **/
-@Component
 public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthFilter.Config> {
 
     private  static  final Logger logger = LoggerFactory.getLogger(AuthGatewayFilterFactory.class);

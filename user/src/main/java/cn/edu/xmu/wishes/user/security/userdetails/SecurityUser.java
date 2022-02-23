@@ -1,25 +1,30 @@
 package cn.edu.xmu.wishes.user.security.userdetails;
 
+import cn.edu.xmu.wishes.user.model.po.AuthRole;
 import cn.edu.xmu.wishes.user.model.po.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SecurityUser implements UserDetails {
     private static final long serialVersionUID= 1305917476121918181L;
 
     private User user;
 
-    private List<SimpleGrantedAuthority> authorityList;
+    private List<AuthRole> roleList;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorityList;
+        return roleList;
     }
 
     @Override
@@ -34,7 +39,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
@@ -44,7 +49,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
