@@ -38,7 +38,7 @@ import java.util.Map;
  * @since 2022-02-07
  */
 @RestController
-@RequestMapping(value = "/", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/oauth", produces = "application/json;charset=UTF-8")
 public class UserController {
     @Autowired
     private HttpServletResponse httpServletResponse;

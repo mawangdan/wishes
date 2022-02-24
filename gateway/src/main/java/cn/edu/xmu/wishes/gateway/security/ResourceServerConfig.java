@@ -88,7 +88,7 @@ public class ResourceServerConfig {
     ServerAccessDeniedHandler accessDeniedHandler() {
         return (exchange, denied) -> {
             Mono<Void> mono = Mono.defer(() -> Mono.just(exchange.getResponse()))
-                    .flatMap(response -> ResponseUtils.writeErrorInfo(response, ReturnNo.AUTH_NEED_LOGIN));
+                    .flatMap(response -> ResponseUtils.writeErrorInfo(response, ReturnNo.AUTH_INVALID_JWT));
             return mono;
         };
     }
@@ -100,7 +100,7 @@ public class ResourceServerConfig {
     ServerAuthenticationEntryPoint authenticationEntryPoint() {
         return (exchange, e) -> {
             Mono<Void> mono = Mono.defer(() -> Mono.just(exchange.getResponse()))
-                    .flatMap(response -> ResponseUtils.writeErrorInfo(response, ReturnNo.AUTH_INVALID_JWT));
+                    .flatMap(response -> ResponseUtils.writeErrorInfo(response, ReturnNo.AUTH_NEED_LOGIN));
             return mono;
         };
     }

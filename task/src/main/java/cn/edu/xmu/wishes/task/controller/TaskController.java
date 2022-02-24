@@ -63,7 +63,7 @@ public class TaskController {
 
     }
 
-    @GetMapping("/task/{id}")
+    @GetMapping("/tasks/{id}")
     public Object getTaskById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(new ReturnObject(taskService.lambdaQuery().list()));
     }

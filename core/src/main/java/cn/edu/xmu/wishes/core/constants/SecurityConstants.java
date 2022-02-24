@@ -10,7 +10,7 @@ public interface SecurityConstants {
     /**
      * JWT令牌前缀
      */
-    String JWT_PREFIX = "bearer ";
+    String JWT_PREFIX = "Bearer ";
 
 
     /**

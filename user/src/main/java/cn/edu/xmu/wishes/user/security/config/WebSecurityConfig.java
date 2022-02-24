@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/login", "/users", "/actuator/**", "/token").permitAll()
+            .antMatchers("/oauth/**, /internal/**").permitAll()
             .anyRequest().authenticated()
             .and()
 //            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
