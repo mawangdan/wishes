@@ -23,7 +23,7 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
         Page<Task> taskPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         Page<Task> tasks = this.baseMapper.selectPage(taskPage, queryWrapper);
-        return new ReturnObject(Common.getPageRetVo(tasks, TaskRetVo.class));
+        return Common.getPageRetVo(tasks, TaskRetVo.class);
     }
 
     @Override
