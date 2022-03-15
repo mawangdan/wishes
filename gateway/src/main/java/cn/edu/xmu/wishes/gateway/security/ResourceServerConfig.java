@@ -24,6 +24,9 @@ import org.springframework.security.oauth2.server.resource.authentication.Reacti
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
 
 import java.io.InputStream;
@@ -60,6 +63,31 @@ public class ResourceServerConfig {
     }
 
     @Bean
+    public CorsWebFilter corsWebFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedOriginPattern("*");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedHeader("*");
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return new CorsWebFilter(source);
+    }
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.addAllowedOriginPattern("*");
+//        config.addAllowedMethod("*");
+//        config.addAllowedHeader("*");
+//        config.setAllowCredentials(true);
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", config);
+//        return source;
+//    }
+
+    @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter())
                 .publicKey(publicKey());
@@ -75,6 +103,7 @@ public class ResourceServerConfig {
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler()) // 处理未授权
                 .authenticationEntryPoint(authenticationEntryPoint()) //处理未认证
+//                .and().cors().configurationSource(corsConfigurationSource())
                 .and().csrf().disable();
 
         return http.build();
@@ -88,7 +117,7 @@ public class ResourceServerConfig {
     ServerAccessDeniedHandler accessDeniedHandler() {
         return (exchange, denied) -> {
             Mono<Void> mono = Mono.defer(() -> Mono.just(exchange.getResponse()))
-                    .flatMap(response -> ResponseUtils.writeErrorInfo(response, ReturnNo.AUTH_INVALID_JWT));
+                    .flatMap(response -> ResponseUtils.writeErrorInfo(response, ReturnNo.AUTH_NO_RIGHT));
             return mono;
         };
     }

@@ -67,4 +67,9 @@ public class TaskController {
     public Object getTaskById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(new ReturnObject(taskService.lambdaQuery().list()));
     }
+
+    @GetMapping("/tasks")
+    public Object getTask(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
+        return Common.decorateReturnObject(taskService.getTask(page, pageSize));
+    }
 }

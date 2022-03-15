@@ -71,6 +71,7 @@ public class ResourceServerManager implements ReactiveAuthorizationManager<Autho
 //                authorizedRoles.addAll(Convert.toList(String.class, roles));
                 if (requireCheck == false) {
                     requireCheck = true;
+                    break;
                 }
             }
         }
