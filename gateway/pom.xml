@@ -35,10 +35,6 @@
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.github.pagehelper</groupId>
-                    <artifactId>pagehelper-spring-boot-starter</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>com.github.lookfirst</groupId>
                     <artifactId>sardine</artifactId>
                 </exclusion>

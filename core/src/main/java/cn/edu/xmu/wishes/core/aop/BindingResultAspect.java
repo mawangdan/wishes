@@ -1,4 +1,4 @@
-package cn.edu.xmu.wishes.core;
+package cn.edu.xmu.wishes.core.aop;
 
 import cn.edu.xmu.wishes.core.util.Common;
 import org.aspectj.lang.ProceedingJoinPoint;

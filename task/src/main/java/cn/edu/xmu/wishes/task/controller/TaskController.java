@@ -4,8 +4,9 @@ import cn.edu.xmu.wishes.core.util.Common;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.task.model.vo.TaskDraftVo;
-import cn.edu.xmu.wishes.task.service.imp.TaskDraftServiceImp;
-import cn.edu.xmu.wishes.task.service.imp.TaskServiceImp;
+import cn.edu.xmu.wishes.task.service.TaskDraftService;
+import cn.edu.xmu.wishes.task.service.TaskService;
+import cn.edu.xmu.wishes.task.service.TaskTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -21,10 +22,13 @@ import java.util.List;
 @RequestMapping(value = "/", produces = "application/json;charset=UTF-8")
 public class TaskController {
     @Autowired
-    private TaskServiceImp taskService;
+    private TaskService taskService;
 
     @Autowired
-    private TaskDraftServiceImp taskDraftService;
+    private TaskDraftService taskDraftService;
+
+    @Autowired
+    private TaskTypeService taskTypeService;
 
     @Autowired
     private HttpServletResponse httpServletResponse;
@@ -38,7 +42,7 @@ public class TaskController {
             return o;
         }
 
-        return Common.decorateReturnObject(taskDraftService.createTaskDraft(taskDraftVo));
+        return Common.decorateReturnObject(taskDraftService.insertTaskDraft(taskDraftVo));
     }
 
     @GetMapping("/taskdraft/{id}")

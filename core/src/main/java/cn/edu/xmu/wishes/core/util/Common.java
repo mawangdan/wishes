@@ -1,7 +1,7 @@
 package cn.edu.xmu.wishes.core.util;
 
 import cn.edu.xmu.wishes.core.model.VoObject;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -329,76 +329,25 @@ public class Common {
         }
     }
 
-    /**
-     * 处理分页返回对象
-     * @param returnObject 返回的对象
-     * @return
-     * TODO： 利用cloneVo方法可以生成任意类型v对象,从而把createVo方法从bo中移除
-     */
-    public static ReturnObject getPageRetObject(ReturnObject<PageInfo<VoObject>> returnObject) {
-        ReturnNo code = returnObject.getCode();
-        switch (code){
-            case OK:
-            case RESOURCE_FALSIFY:
-                PageInfo<VoObject> objs = returnObject.getData();
-                if (objs != null){
-                    List<Object> voObjs = new ArrayList<>(objs.getList().size());
-                    for (Object data : objs.getList()) {
-                        if (data instanceof VoObject) {
-                            voObjs.add(((VoObject)data).createVo());
-                        }
-                    }
 
-                    Map<String, Object> ret = new HashMap<>();
-                    ret.put("list", voObjs);
-                    ret.put("total", objs.getTotal());
-                    ret.put("page", objs.getPageNum());
-                    ret.put("pageSize", objs.getPageSize());
-                    ret.put("pages", objs.getPages());
-                    return new ReturnObject(ret);
-                }else{
-                    return new ReturnObject();
-                }
-            default:
-                return new ReturnObject(returnObject.getCode(), returnObject.getErrmsg());
+    public static ReturnObject getPageRetVo(IPage page, Class voClass){
+        List records = page.getRecords();
+        if (records != null){
+            List<Object> voObjs = new ArrayList<>(records.size());
+            for (Object data : records) {
+                voObjs.add(cloneVo(data,voClass));
+            }
+            Map<String, Object> ret = new HashMap<>();
+            ret.put("list", voObjs);
+            ret.put("total", page.getTotal());
+            ret.put("page", page.getCurrent());
+            ret.put("pageSize", page.getSize());
+            ret.put("pages", page.getPages());
+            return new ReturnObject(ret);
+        }else{
+            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
         }
     }
-
-    /**
-     * @author xucangbai
-     * @param returnObject
-     * @param voClass
-     * @return
-     */
-    public static ReturnObject getPageRetVo(ReturnObject<PageInfo<Object>> returnObject,Class voClass){
-        ReturnNo code = returnObject.getCode();
-        switch (code){
-            case OK:
-            case RESOURCE_FALSIFY:
-                PageInfo<Object> objs = returnObject.getData();
-                if (objs != null){
-                    List<Object> voObjs = new ArrayList<>(objs.getList().size());
-                    for (Object data : objs.getList()) {
-                        if (data instanceof Object) {
-                            voObjs.add(cloneVo(data,voClass));
-                        }
-                    }
-                    Map<String, Object> ret = new HashMap<>();
-                    ret.put("list", voObjs);
-                    ret.put("total", objs.getTotal());
-                    ret.put("page", objs.getPageNum());
-                    ret.put("pageSize", objs.getPageSize());
-                    ret.put("pages", objs.getPages());
-                    return new ReturnObject(code,ret);
-                }else{
-                    return new ReturnObject(code);
-                }
-            default:
-                return new ReturnObject(returnObject.getCode(), returnObject.getErrmsg());
-        }
-    }
-
-
 
     /**
      * 根据 errCode 修饰 API 返回对象的 HTTP Status

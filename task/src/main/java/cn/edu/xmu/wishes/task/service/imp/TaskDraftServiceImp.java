@@ -24,8 +24,9 @@ public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft>
     @Autowired
     private StorageUtil storageUtil;
 
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public ReturnObject createTaskDraft(TaskDraftVo taskDraftVo) {
+    public ReturnObject insertTaskDraft(TaskDraftVo taskDraftVo) {
         try {
             TaskDraft taskDraft = new TaskDraft();
             BeanUtils.copyProperties(taskDraftVo, taskDraft, TaskDraft.class);
@@ -39,6 +40,7 @@ public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft>
         }
     }
 
+    @Override
     @Transactional(readOnly = true, rollbackFor = Exception.class)
     public ReturnObject getTaskDraftById(Long id) {
         try {
@@ -54,6 +56,7 @@ public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft>
         }
     }
 
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public ReturnObject uploadTaskImage(Long id, List<MultipartFile> files) {
         try {
