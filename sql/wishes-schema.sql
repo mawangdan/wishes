@@ -88,6 +88,23 @@ CREATE TABLE `wishes_task_draft` (
                                PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `wishes_task_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wishes_task_type` (
+                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                               `name` varchar(128) DEFAULT NULL,
+                               `state` tinyint(4) DEFAULT '0',
+                               `be_deleted` tinyint(4) DEFAULT '0',
+                               `creator_id` bigint(20) DEFAULT NULL,
+                               `creator_name` varchar(128) DEFAULT NULL,
+                               `modifier_id` bigint(20) DEFAULT NULL,
+                               `modifier_name` varchar(128) DEFAULT NULL,
+                               `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                               `gmt_modified` datetime DEFAULT NULL,
+                               PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `wishes_auth_privilege`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;

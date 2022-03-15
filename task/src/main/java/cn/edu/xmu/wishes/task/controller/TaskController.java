@@ -70,6 +70,6 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public Object getTask(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
-        return Common.decorateReturnObject(taskService.getTask(page, pageSize));
+        return Common.decorateReturnObject(taskService.listTask(page, pageSize));
     }
 }

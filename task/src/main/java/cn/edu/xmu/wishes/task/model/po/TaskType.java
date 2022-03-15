@@ -12,23 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-@TableName("wishes_task")
-public class Task extends BaseEntity {
-    private Long initiatorId;
-
-    private Long receiverId;
-
-    private Byte type;
-
-    private String title;
-
-    private String description;
-
-    private String location;
-
-    private String imageUrl;
-
-    private String price;
+@TableName("wishes_task_type")
+public class TaskType extends BaseEntity {
+    private String name;
 
     private Byte state;
 

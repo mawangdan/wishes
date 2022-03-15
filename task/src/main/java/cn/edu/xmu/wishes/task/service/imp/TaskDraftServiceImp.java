@@ -7,6 +7,7 @@ import cn.edu.xmu.wishes.core.util.storage.StorageUtil;
 import cn.edu.xmu.wishes.task.mapper.TaskDraftMapper;
 import cn.edu.xmu.wishes.task.model.po.TaskDraft;
 import cn.edu.xmu.wishes.task.model.vo.TaskDraftVo;
+import cn.edu.xmu.wishes.task.service.TaskDraftService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Service
-public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft> {
+@Service("taskDraftService")
+public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft> implements TaskDraftService {
     @Autowired
     private StorageUtil storageUtil;
 
