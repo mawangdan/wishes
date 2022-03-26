@@ -17,7 +17,7 @@ public class BindingResultAspect {
 //    @Pointcut("execution(public * cn.edu.xmu.wishes.*..*Controller(..)) && args(.., bindingResult)")
 //    public void bindingResultAspect() {
 //    }
-
+    //Todo 未测试
     @Around("execution(public * cn.edu.xmu.wishes.*..*Controller(..)) && args(.., bindingResult)")
     public Object around(ProceedingJoinPoint joinPoint, BindingResult bindingResult) throws Throwable {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();

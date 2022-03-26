@@ -92,9 +92,6 @@ public class ResourceServerConfig {
         http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter())
                 .publicKey(publicKey());
 
-//        if (ignoreUrls.isEmpty()) {
-//            ignoreUrls.add("/**");
-//        }
         http.oauth2ResourceServer().authenticationEntryPoint(authenticationEntryPoint());
         http.authorizeExchange()
                 .pathMatchers(Convert.toStrArray(ignoreUrls)).permitAll()

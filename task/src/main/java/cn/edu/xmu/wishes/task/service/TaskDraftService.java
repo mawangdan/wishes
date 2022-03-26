@@ -14,4 +14,6 @@ public interface TaskDraftService extends IService<TaskDraft> {
     ReturnObject getTaskDraftById(Long id);
 
     ReturnObject uploadTaskImage(Long id, List<MultipartFile> files);
+
+    ReturnObject updateTaskDraft(Long id, TaskDraftVo taskDraftVo);
 }

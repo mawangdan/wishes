@@ -6,6 +6,7 @@ import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.core.util.storage.StorageUtil;
 import cn.edu.xmu.wishes.task.mapper.TaskDraftMapper;
 import cn.edu.xmu.wishes.task.model.po.TaskDraft;
+import cn.edu.xmu.wishes.task.model.vo.TaskDraftRetVo;
 import cn.edu.xmu.wishes.task.model.vo.TaskDraftVo;
 import cn.edu.xmu.wishes.task.service.TaskDraftService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -98,6 +99,20 @@ public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft>
         }
     }
 
-
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ReturnObject updateTaskDraft(Long id, TaskDraftVo taskDraftVo) {
+        try {
+            TaskDraft taskDraft = new TaskDraft();
+            BeanUtils.copyProperties(taskDraftVo, taskDraft);
+            taskDraft.setId(id);
+            this.updateById(taskDraft);
+            return new ReturnObject(Common.cloneVo(taskDraft, TaskDraftRetVo.class));
+        }
+        catch (Exception e) {
+            log.error("updateTaskDraft" + e.getMessage());
+            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+        }
+    }
 
 }

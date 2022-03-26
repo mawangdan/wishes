@@ -3,10 +3,12 @@ package cn.edu.xmu.wishes.task.controller;
 import cn.edu.xmu.wishes.core.util.Common;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
+import cn.edu.xmu.wishes.core.util.UserInfoUtil;
 import cn.edu.xmu.wishes.task.model.vo.TaskDraftVo;
 import cn.edu.xmu.wishes.task.service.TaskDraftService;
 import cn.edu.xmu.wishes.task.service.TaskService;
 import cn.edu.xmu.wishes.task.service.TaskTypeService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +37,7 @@ public class TaskController {
 
     private static final Integer IMAGE_MAX_SIZE=1000000;
 
+    @ApiOperation("新增草稿任务")
     @PostMapping("/taskdraft/add")
     public Object createTaskDraft(@Validated @RequestBody TaskDraftVo taskDraftVo, BindingResult bindingResult) {
         Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
@@ -45,12 +48,14 @@ public class TaskController {
         return Common.decorateReturnObject(taskDraftService.insertTaskDraft(taskDraftVo));
     }
 
+    @ApiOperation("通过id获取草稿任务")
     @GetMapping("/taskdraft/{id}")
     public Object getTaskDraftById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(taskDraftService.getTaskDraftById(id));
     }
 
-    @PostMapping("taskdraft/{id}/uploadImg")
+    @ApiOperation("为草稿任务上传图片")
+    @PostMapping("/taskdraft/{id}/uploadImg")
     public Object uploadTaskImage(@PathVariable Long id, HttpServletRequest request) {
 
         //对输入数据进行合法性判断
@@ -67,13 +72,27 @@ public class TaskController {
 
     }
 
+    @ApiOperation("修改草稿任务")
+    @PutMapping("/taskdraft/{id}")
+    public Object updateTaskDraft(@PathVariable Long id, @RequestBody @Validated TaskDraftVo taskDraftVo,
+                                  BindingResult bindingResult) {
+        Long userId = UserInfoUtil.getUserId();
+        if (!userId.equals(taskDraftVo.getInitiatorId())) {
+            return Common.decorateReturnObject(new ReturnObject(ReturnNo.AUTH_NO_RIGHT));
+        }
+        return Common.decorateReturnObject(taskDraftService.updateTaskDraft(id, taskDraftVo));
+    }
+
+    @ApiOperation("通过id获取任务")
     @GetMapping("/tasks/{id}")
     public Object getTaskById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(new ReturnObject(taskService.lambdaQuery().list()));
     }
 
+    @ApiOperation("通过筛选条件获取分页后任务")
     @GetMapping("/tasks")
-    public Object getTask(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
-        return Common.decorateReturnObject(taskService.listTask(page, pageSize));
+    public Object listTask(@RequestParam(required = false) Long initiatorId,  @RequestParam(required = false) Byte type,
+                           @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
+        return Common.decorateReturnObject(taskService.listTask(initiatorId, type, page, pageSize));
     }
 }

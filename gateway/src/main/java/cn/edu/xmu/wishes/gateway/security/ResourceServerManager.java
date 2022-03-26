@@ -1,6 +1,7 @@
 package cn.edu.xmu.wishes.gateway.security;
 
 import cn.edu.xmu.wishes.core.constants.SecurityConstants;
+import cn.hutool.core.convert.Convert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
@@ -67,8 +68,8 @@ public class ResourceServerManager implements ReactiveAuthorizationManager<Autho
         for (Map.Entry<String, Object> permRoles : urlPermRolesRules.entrySet()) {
             String perm = permRoles.getKey();
             if (pathMatcher.match(perm, restfulPath)) {
-//                List<String> roles = Convert.toList(String.class, permRoles.getValue());
-//                authorizedRoles.addAll(Convert.toList(String.class, roles));
+                List<String> roles = Convert.toList(String.class, permRoles.getValue());
+                authorizedRoles.addAll(Convert.toList(String.class, roles));
                 if (requireCheck == false) {
                     requireCheck = true;
                     break;
@@ -86,11 +87,11 @@ public class ResourceServerManager implements ReactiveAuthorizationManager<Autho
                 .flatMapIterable(Authentication::getAuthorities)
                 .map(GrantedAuthority::getAuthority)
                 .any(authority -> {
-                    String roleCode = authority.substring(SecurityConstants.AUTHORITY_PREFIX.length()); // 用户的角色
-                    if (SecurityConstants.ROOT_ROLE_CODE.equals(roleCode)) {
+                    // String roleCode = authority.substring(SecurityConstants.AUTHORITY_PREFIX.length()); // 用户的角色
+                    if (SecurityConstants.ROOT_ROLE_CODE.equals(authority)) {
                         return true; // 如果是超级管理员则放行
                     }
-                    boolean hasAuthorized = !authorizedRoles.isEmpty() && authorizedRoles.contains(roleCode);
+                    boolean hasAuthorized = !authorizedRoles.isEmpty() && authorizedRoles.contains(authority);
                     return hasAuthorized;
                 })
                 .map(AuthorizationDecision::new)
