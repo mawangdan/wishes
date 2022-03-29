@@ -7,17 +7,15 @@ import cn.edu.xmu.wishes.core.util.UserInfoUtil;
 import cn.edu.xmu.wishes.task.model.vo.TaskDraftVo;
 import cn.edu.xmu.wishes.task.service.TaskDraftService;
 import cn.edu.xmu.wishes.task.service.TaskService;
-import cn.edu.xmu.wishes.task.service.TaskTypeService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -29,27 +27,17 @@ public class TaskController {
     @Autowired
     private TaskDraftService taskDraftService;
 
-    @Autowired
-    private TaskTypeService taskTypeService;
-
-    @Autowired
-    private HttpServletResponse httpServletResponse;
-
     private static final Integer IMAGE_MAX_SIZE=1000000;
 
     @ApiOperation("新增草稿任务")
     @PostMapping("/taskdraft/add")
-    public Object createTaskDraft(@Validated @RequestBody TaskDraftVo taskDraftVo, BindingResult bindingResult) {
-        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
-        if(o!=null) {
-            return o;
-        }
-
+    public Object createTaskDraft(@Validated @RequestBody TaskDraftVo taskDraftVo) {
         return Common.decorateReturnObject(taskDraftService.insertTaskDraft(taskDraftVo));
     }
 
     @ApiOperation("通过id获取草稿任务")
     @GetMapping("/taskdraft/{id}")
+    @Cacheable(cacheNames = "task.draft#3600", key = "#id")
     public Object getTaskDraftById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(taskDraftService.getTaskDraftById(id));
     }
@@ -74,8 +62,7 @@ public class TaskController {
 
     @ApiOperation("修改草稿任务")
     @PutMapping("/taskdraft/{id}")
-    public Object updateTaskDraft(@PathVariable Long id, @RequestBody @Validated TaskDraftVo taskDraftVo,
-                                  BindingResult bindingResult) {
+    public Object updateTaskDraft(@PathVariable Long id, @RequestBody @Validated TaskDraftVo taskDraftVo) {
         Long userId = UserInfoUtil.getUserId();
         if (!userId.equals(taskDraftVo.getInitiatorId())) {
             return Common.decorateReturnObject(new ReturnObject(ReturnNo.AUTH_NO_RIGHT));
@@ -85,8 +72,9 @@ public class TaskController {
 
     @ApiOperation("通过id获取任务")
     @GetMapping("/tasks/{id}")
+    @Cacheable(cacheNames = "task#3600", key = "#id")
     public Object getTaskById(@PathVariable("id") Long id) {
-        return Common.decorateReturnObject(new ReturnObject(taskService.lambdaQuery().list()));
+        return Common.decorateReturnObject(new ReturnObject(taskService.getById(id)));
     }
 
     @ApiOperation("通过筛选条件获取分页后任务")
