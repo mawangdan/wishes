@@ -5,5 +5,7 @@ import cn.edu.xmu.wishes.task.model.po.Task;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface TaskService extends IService<Task> {
-    public ReturnObject listTask(Long initiatorId, Byte type, Integer page, Integer pageSize);
+    ReturnObject listTask(Long initiatorId, Byte type, Integer page, Integer pageSize);
+
+    ReturnObject getTaskById(Long id);
 }

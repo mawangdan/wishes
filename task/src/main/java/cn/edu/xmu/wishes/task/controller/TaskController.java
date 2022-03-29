@@ -9,7 +9,6 @@ import cn.edu.xmu.wishes.task.service.TaskDraftService;
 import cn.edu.xmu.wishes.task.service.TaskService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,7 +36,6 @@ public class TaskController {
 
     @ApiOperation("通过id获取草稿任务")
     @GetMapping("/taskdraft/{id}")
-    @Cacheable(cacheNames = "task.draft#3600", key = "#id")
     public Object getTaskDraftById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(taskDraftService.getTaskDraftById(id));
     }
@@ -72,9 +70,8 @@ public class TaskController {
 
     @ApiOperation("通过id获取任务")
     @GetMapping("/tasks/{id}")
-    @Cacheable(cacheNames = "task#3600", key = "#id")
     public Object getTaskById(@PathVariable("id") Long id) {
-        return Common.decorateReturnObject(new ReturnObject(taskService.getById(id)));
+        return Common.decorateReturnObject(taskService.getTaskById(id));
     }
 
     @ApiOperation("通过筛选条件获取分页后任务")

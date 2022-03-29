@@ -1,6 +1,7 @@
 package cn.edu.xmu.wishes.task.service.imp;
 
 import cn.edu.xmu.wishes.core.util.Common;
+import cn.edu.xmu.wishes.core.util.RedisUtil;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.core.util.storage.StorageUtil;
@@ -12,6 +13,8 @@ import cn.edu.xmu.wishes.task.service.TaskDraftService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,24 +28,31 @@ public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft>
     @Autowired
     private StorageUtil storageUtil;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
+    private final String taskDraftCacheKey = "task.draft#3600";
+
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = taskDraftCacheKey, key = "#result.data.id")
     public ReturnObject insertTaskDraft(TaskDraftVo taskDraftVo) {
         try {
             TaskDraft taskDraft = new TaskDraft();
             BeanUtils.copyProperties(taskDraftVo, taskDraft, TaskDraft.class);
 
             save(taskDraft);
-            return new ReturnObject();
+            return new ReturnObject(taskDraft);
         }
         catch (Exception e) {
             log.error("createTaskDraft" + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+            throw e;
         }
     }
 
     @Override
     @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Cacheable(cacheNames = taskDraftCacheKey, key = "#id")
     public ReturnObject getTaskDraftById(Long id) {
         try {
             TaskDraft taskDraft = getById(id);
@@ -53,7 +63,7 @@ public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft>
         }
         catch (Exception e) {
             log.error("getTaskDraftById" + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+            throw e;
         }
     }
 
@@ -95,12 +105,13 @@ public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft>
         }
         catch (Exception e) {
             log.error("uploadTaskImage" + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+            throw (RuntimeException)e;
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = taskDraftCacheKey, key = "#id")
     public ReturnObject updateTaskDraft(Long id, TaskDraftVo taskDraftVo) {
         try {
             TaskDraft taskDraft = new TaskDraft();
@@ -111,7 +122,7 @@ public class TaskDraftServiceImp extends ServiceImpl<TaskDraftMapper, TaskDraft>
         }
         catch (Exception e) {
             log.error("updateTaskDraft" + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+            throw e;
         }
     }
 
