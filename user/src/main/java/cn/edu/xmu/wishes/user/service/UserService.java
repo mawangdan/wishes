@@ -1,6 +1,8 @@
 package cn.edu.xmu.wishes.user.service;
 
+import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.user.model.po.User;
+import cn.edu.xmu.wishes.user.model.vo.NewPasswordVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
+    ReturnObject changeUserPassword(Long userId, NewPasswordVo vo);
 }

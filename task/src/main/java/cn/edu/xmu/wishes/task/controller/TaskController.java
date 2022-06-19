@@ -28,18 +28,34 @@ public class TaskController {
 
     private static final Integer IMAGE_MAX_SIZE=1000000;
 
+    /**
+     * 新增草稿任务
+     * @param taskDraftVo
+     * @return
+     */
     @ApiOperation("新增草稿任务")
     @PostMapping("/taskdraft/add")
     public Object createTaskDraft(@Validated @RequestBody TaskDraftVo taskDraftVo) {
         return Common.decorateReturnObject(taskDraftService.insertTaskDraft(taskDraftVo));
     }
 
+    /**
+     * 通过id获取草稿任务
+     * @param id
+     * @return
+     */
     @ApiOperation("通过id获取草稿任务")
     @GetMapping("/taskdraft/{id}")
     public Object getTaskDraftById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(taskDraftService.getTaskDraftById(id));
     }
 
+    /**
+     * 为草稿任务上传图片
+     * @param id
+     * @param request
+     * @return
+     */
     @ApiOperation("为草稿任务上传图片")
     @PostMapping("/taskdraft/{id}/uploadImg")
     public Object uploadTaskImage(@PathVariable Long id, HttpServletRequest request) {
@@ -58,6 +74,12 @@ public class TaskController {
 
     }
 
+    /**
+     * 修改草稿任务
+     * @param id
+     * @param taskDraftVo
+     * @return
+     */
     @ApiOperation("修改草稿任务")
     @PutMapping("/taskdraft/{id}")
     public Object updateTaskDraft(@PathVariable Long id, @RequestBody @Validated TaskDraftVo taskDraftVo) {
@@ -68,13 +90,26 @@ public class TaskController {
         return Common.decorateReturnObject(taskDraftService.updateTaskDraft(id, taskDraftVo));
     }
 
+    /**
+     * 通过id获取任务
+     * @param id
+     * @return
+     */
     @ApiOperation("通过id获取任务")
     @GetMapping("/tasks/{id}")
     public Object getTaskById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(taskService.getTaskById(id));
     }
 
-    @ApiOperation("通过筛选条件获取分页后任务")
+    /**
+     * 通过筛选条件获取分页后的任务
+     * @param initiatorId 发起者id
+     * @param type 类型
+     * @param page 页号
+     * @param pageSize 页大小
+     * @return
+     */
+    @ApiOperation("通过筛选条件获取分页后的任务")
     @GetMapping("/tasks")
     public Object listTask(@RequestParam(required = false) Long initiatorId,  @RequestParam(required = false) Byte type,
                            @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {

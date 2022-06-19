@@ -64,7 +64,7 @@
 
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <artifactId>mybatis-plus</artifactId>
         </dependency>
 
         <dependency>
@@ -105,12 +105,13 @@
 
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
+            <artifactId>springfox-boot-starter</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
+            <groupId>io.github.yedaxia</groupId>
+            <artifactId>japidocs</artifactId>
+            <version>1.4.4</version>
         </dependency>
 
         <dependency>

@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Data
@@ -24,9 +22,9 @@ public class UserVo implements Serializable {
 
     private String address;
 
-    @NotBlank(message = "手机号不能为空")
-    @Pattern(regexp = "^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\\d{8}$"
-            , message = "手机号格式错误")
+//    @NotBlank(message = "手机号不能为空")
+//    @Pattern(regexp = "^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\\d{8}$"
+//            , message = "手机号格式错误")
     private String mobile;
 
 //    @NotBlank(message = "邮箱不能为空")

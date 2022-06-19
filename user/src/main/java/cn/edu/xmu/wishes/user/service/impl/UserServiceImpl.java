@@ -8,8 +8,6 @@ import cn.edu.xmu.wishes.user.config.MailSenderProperty;
 import cn.edu.xmu.wishes.user.mapper.UserMapper;
 import cn.edu.xmu.wishes.user.model.po.User;
 import cn.edu.xmu.wishes.user.model.vo.*;
-import cn.edu.xmu.wishes.user.security.userdetails.SecurityUser;
-import cn.edu.xmu.wishes.user.security.userdetails.UserDetailsServiceImpl;
 import cn.edu.xmu.wishes.user.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -21,8 +19,6 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scripting.support.ResourceScriptSource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,9 +56,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private MailSenderProperty mailProperty;
-
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
 
     @Transactional(rollbackFor = Exception.class)
     public ReturnObject registerUser(UserVo userVo) {
@@ -169,41 +162,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return sb.toString();
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public ReturnObject login(LoginVo loginVo) {
-        SecurityUser securityUser = (SecurityUser) userDetailsService.loadUserByUsername(loginVo.getUserName());
-        if (securityUser == null) {
-            return new ReturnObject(ReturnNo.CUSTOMER_INVALID_ACCOUNT);
-        }
 
-        User user = securityUser.getUser();
-
-        if (user == null || !user.getPassword().equals(loginVo.getPassword())) {
-            return new ReturnObject(ReturnNo.CUSTOMER_INVALID_ACCOUNT);
-        }
-        else if (user.getState() == User.Type.BANNED) {
-            return new ReturnObject(ReturnNo.CUSTOMER_FORBIDDEN);
-        }
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, securityUser.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        return createToken(user);
-//        return null;
-    }
-
-    private ReturnObject createToken(User user) {
-        try {
-            String token = jwtHelper.createToken(user.getId(), user.getUserName(), 1L, 1, USER_EXPIRE_TIME);
-            String key = String.format(USER_KEY, user.getId());
-
-            redisUtil.addSet(key, token, USER_EXPIRE_TIME);
-            return new ReturnObject(token);
-        }
-        catch (Exception e) {
-            log.error("token " + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
-        }
-    }
 
     private void banJwt(String jwt) {
         String[] banSetName = {"BanJwt_0", "BanJwt_1"};
@@ -242,7 +201,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return new ReturnObject(ReturnNo.OK);
         } catch (Exception e) {
             log.error("logout " + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+            throw e;
         }
     }
 
@@ -253,7 +212,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return new ReturnObject(cloneVo(user, UserRetVo.class));
         } catch (Exception e) {
             log.error("logout " + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+            throw e;
         }
     }
 
@@ -267,7 +226,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return new ReturnObject();
         } catch (Exception e) {
             log.error("changeUserInfo " + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+            throw e;
+        }
+    }
+
+    @Override
+    public ReturnObject changeUserPassword(Long userId, NewPasswordVo vo) {
+        try {
+            User user = this.getById(userId);
+            if (!user.getPassword().equals(vo.getOldPassword())) {
+                return new ReturnObject(ReturnNo.CUSTOMER_PASSWORDWRONG);
+            }
+
+            user.setPassword(vo.getNewPassword());
+            this.save(user);
+            return new ReturnObject();
+        } catch (Exception e) {
+            log.error("changeUserPassword " + e.getMessage());
+            throw e;
         }
     }
 }

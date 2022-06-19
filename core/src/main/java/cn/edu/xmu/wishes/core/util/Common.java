@@ -378,10 +378,6 @@ public class Common {
             case FIELD_NOTVALID:
             case IMG_FORMAT_ERROR:
             case IMG_SIZE_EXCEED:
-            case LATE_BEGINTIME:
-            case ACT_LATE_PAYTIME:
-            case ACT_EARLY_PAYTIME:
-            case COUPON_LATE_COUPONTIME:
                 // 400
                 return new ResponseEntity(
                         ResponseUtil.fail(returnObject.getCode(), returnObject.getErrmsg()),
