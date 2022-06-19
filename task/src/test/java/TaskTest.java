@@ -1,4 +1,4 @@
-import cn.edu.xmu.wishes.task.TaskApplication;
+import cn.edu.xmu.wishes.TaskApplication;
 import cn.edu.xmu.wishes.task.mapper.TaskDraftMapper;
 import cn.edu.xmu.wishes.task.model.po.TaskDraft;
 import org.junit.jupiter.api.Test;
