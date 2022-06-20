@@ -1,6 +1,7 @@
 package cn.edu.xmu.wishes.core.util;
 
 import cn.edu.xmu.wishes.core.constants.SecurityConstants;
+import cn.edu.xmu.wishes.core.exception.UnAuthException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -23,7 +24,7 @@ public class UserInfoUtil {
             return userId;
         } catch (UnsupportedEncodingException | NullPointerException e) {
             log.error("UserInfoUtil getUserId:" + e.getMessage());
-            return null;
+            throw new UnAuthException();
         }
     }
 }

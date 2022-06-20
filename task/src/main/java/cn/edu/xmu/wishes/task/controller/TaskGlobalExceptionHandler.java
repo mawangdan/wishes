@@ -1,5 +1,6 @@
 package cn.edu.xmu.wishes.task.controller;
 
+import cn.edu.xmu.wishes.core.exception.UnAuthException;
 import cn.edu.xmu.wishes.core.util.Common;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
@@ -26,9 +27,15 @@ public class TaskGlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";")), null));
     }
 
+    @ExceptionHandler(value = UnAuthException.class)
+    public Object handleUnAuthException(Exception e) {
+        log.error(e.getStackTrace()[0] + "\n" + e.getMessage());
+        return Common.decorateReturnObject(ReturnObject.AUTH_NEED_LOGIN_RET);
+    }
+
     @ExceptionHandler(value = Exception.class)
     public Object handleException(Exception e) {
         log.error(e.getStackTrace()[0] + "\n" + e.getMessage());
-        return Common.decorateReturnObject(new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR));
+        return Common.decorateReturnObject(ReturnObject.INTERNAL_SERVER_ERR_RET);
     }
 }
