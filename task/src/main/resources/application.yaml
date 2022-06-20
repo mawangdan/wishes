@@ -116,3 +116,4 @@ wishes:
       directory: task
       username: dev
       password: Wishes12345678
+      replaceStr: /webdav

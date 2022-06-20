@@ -8,6 +8,30 @@ import lombok.Getter;
  **/
 @Getter
 public class ReturnObject<T> {
+    public static ReturnObject INTERNAL_SERVER_ERR_RET = new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+    public static ReturnObject AUTH_INVALID_JWT_RET = new ReturnObject(ReturnNo.AUTH_INVALID_JWT);
+    public static ReturnObject AUTH_JWT_EXPIRED_RET = new ReturnObject(ReturnNo.AUTH_JWT_EXPIRED);
+    public static ReturnObject FIELD_NOTVALID_RET = new ReturnObject(ReturnNo.FIELD_NOTVALID);
+    public static ReturnObject RESOURCE_FALSIFY_RET = new ReturnObject(ReturnNo.RESOURCE_FALSIFY);
+    public static ReturnObject IMG_FORMAT_ERROR_RET = new ReturnObject(ReturnNo.IMG_FORMAT_ERROR);
+    public static ReturnObject IMG_SIZE_EXCEED_RET = new ReturnObject(ReturnNo.IMG_SIZE_EXCEED);
+    public static ReturnObject PARAMETER_MISSED_RET = new ReturnObject(ReturnNo.PARAMETER_MISSED);
+    public static ReturnObject FILE_NOT_EXIST_RET = new ReturnObject(ReturnNo.FILE_NOT_EXIST);
+    public static ReturnObject RESOURCE_ID_NOTEXIST_RET = new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST);
+    public static ReturnObject AUTH_NEED_LOGIN_RET = new ReturnObject(ReturnNo.AUTH_NEED_LOGIN);
+    public static ReturnObject AUTH_NO_RIGHT_RET = new ReturnObject(ReturnNo.AUTH_NO_RIGHT);
+    public static ReturnObject RESOURCE_ID_OUTSCOPE_RET = new ReturnObject(ReturnNo.RESOURCE_ID_OUTSCOPE);
+    public static ReturnObject FILE_NO_WRITE_PERMISSION_RET = new ReturnObject(ReturnNo.FILE_NO_WRITE_PERMISSION);
+    public static ReturnObject STATENOTALLOW_RET = new ReturnObject(ReturnNo.STATENOTALLOW);
+    public static ReturnObject ORDERITEM_NOTSHARED_RET = new ReturnObject(ReturnNo.ORDERITEM_NOTSHARED);
+    public static ReturnObject CUSTOMERID_NOTEXIST_RET = new ReturnObject(ReturnNo.CUSTOMERID_NOTEXIST);
+    public static ReturnObject CUSTOMER_INVALID_ACCOUNT_RET = new ReturnObject(ReturnNo.CUSTOMER_INVALID_ACCOUNT);
+    public static ReturnObject CUSTOMER_FORBIDDEN_RET = new ReturnObject(ReturnNo.CUSTOMER_FORBIDDEN);
+    public static ReturnObject CUSTOMER_MOBILEEXIST_RET = new ReturnObject(ReturnNo.CUSTOMER_MOBILEEXIST);
+    public static ReturnObject CUSTOMER_EMAILEXIST_RET = new ReturnObject(ReturnNo.CUSTOMER_EMAILEXIST);
+    public static ReturnObject CUSTOMER_NAMEEXIST_RET = new ReturnObject(ReturnNo.CUSTOMER_NAMEEXIST);
+    public static ReturnObject CUSTOMER_PASSWORDWRONG_RET = new ReturnObject(ReturnNo.CUSTOMER_PASSWORDWRONG);
+    public static ReturnObject CUSTOMER_CAPTCHA_ERROR_RET = new ReturnObject(ReturnNo.CUSTOMER_CAPTCHA_ERROR);
 
     /**
      * 错误号

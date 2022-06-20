@@ -19,11 +19,12 @@ public class WebDavStorage implements Storage {
     private String directory;
     private String username;
     private String password;
+    private String replaceStr;
+
     @Override
     public String store(InputStream inputStream, long contentLength, String contentType, String keyName) {
         try {
             Sardine sardine = SardineFactory.begin(username, password);
-            StringBuilder stringBuilder = new StringBuilder(url);
 
             String baseUrl = url + directory + "/";
 
@@ -38,7 +39,7 @@ public class WebDavStorage implements Storage {
             sardine.put(fileUrl, inputStream);
 
             sardine.shutdown();
-            return fileUrl;
+            return fileUrl.replace(replaceStr, "");
         }
         catch (Exception e) {
             log.error("webdav Storage method:store" + e.getMessage());

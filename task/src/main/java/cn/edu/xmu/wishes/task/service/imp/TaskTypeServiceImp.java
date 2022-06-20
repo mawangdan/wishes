@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class TaskTypeServiceImp extends ServiceImpl<TaskTypeMapper, TaskType> implements TaskTypeService {
     @Override
     @Cacheable("task.type.name")
-    public String getTypeName(Byte type) {
-        return this.getById(type).getName();
+    public String getTypeName(Long typeId) {
+        return this.getById(typeId).getName();
     }
 }

@@ -29,6 +29,7 @@ public enum ReturnNo {
     IMG_FORMAT_ERROR(508,"图片格式不正确"),
     IMG_SIZE_EXCEED(509,"图片大小超限"),
     PARAMETER_MISSED(510, "缺少必要参数"),
+    FILE_NOT_EXIST(511, "文件不存在"),
 
 
     //所有路径带id的API都可能返回此错误

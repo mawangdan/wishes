@@ -2,6 +2,7 @@ package cn.edu.xmu.wishes.core.util;
 
 import cn.edu.xmu.wishes.core.model.VoObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -349,6 +350,21 @@ public class Common {
         }
     }
 
+    public static ReturnObject<Map<String, Object>> getPageRet(IPage page){
+        List records = page.getRecords();
+        if (records != null){
+            Map<String, Object> ret = new HashMap<>();
+            ret.put("list", page.getRecords());
+            ret.put("total", page.getTotal());
+            ret.put("page", page.getCurrent());
+            ret.put("pageSize", page.getSize());
+            ret.put("pages", page.getPages());
+            return new ReturnObject<>(ret);
+        }else{
+            return new ReturnObject<>(ReturnNo.INTERNAL_SERVER_ERR);
+        }
+    }
+
     /**
      * 根据 errCode 修饰 API 返回对象的 HTTP Status
      * @param returnObject 原返回 Object
@@ -378,6 +394,7 @@ public class Common {
             case FIELD_NOTVALID:
             case IMG_FORMAT_ERROR:
             case IMG_SIZE_EXCEED:
+            case FILE_NOT_EXIST:
                 // 400
                 return new ResponseEntity(
                         ResponseUtil.fail(returnObject.getCode(), returnObject.getErrmsg()),
@@ -444,4 +461,16 @@ public class Common {
         return incr;
     }
 
+    public static <T> Page<T> transformPageVo(Page page, Class<T> voClass) {
+        List records = page.getRecords();
+        if (records != null){
+            List<Object> voObjs = new ArrayList<>(records.size());
+            for (Object data : records) {
+                voObjs.add(cloneVo(data,voClass));
+            }
+            return new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        }else{
+            return null;
+        }
+    }
 }

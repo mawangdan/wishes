@@ -23,6 +23,7 @@ public class StorageProperties {
         private String directory;
         private String username;
         private String password;
+        private String replaceStr;
     }
 
     @Data

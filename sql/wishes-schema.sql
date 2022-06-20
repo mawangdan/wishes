@@ -49,7 +49,7 @@ CREATE TABLE `wishes_task` (
                                       `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                       `initiator_id` bigint(20) DEFAULT NULL,
                                       `receiver_id` bigint(20) DEFAULT NULL,
-                                      `type` tinyint(4) DEFAULT NULL,
+                                      `type_id` bigint(20) DEFAULT NULL,
                                       `title` varchar(128) DEFAULT NULL,
                                       `description` varchar(1022) DEFAULT NULL,
                                       `location` varchar(128) DEFAULT NULL,
