@@ -29,15 +29,22 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
 
     private final String taskCacheKey = "task#3600";
 
-    @Override
-    public ReturnObject listTask(Long initiatorId, Long typeId, Integer page, Integer pageSize) {
-        Page<Task> taskPage = new Page<>(page, pageSize);
+    private LambdaQueryWrapper<Task> getQueryWrapperByTask(Task exampleTask) {
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-        Optional.ofNullable(initiatorId).ifPresent(x -> queryWrapper.eq(Task::getInitiatorId, x));
-        Optional.ofNullable(typeId).ifPresent(x -> queryWrapper.eq(Task::getTypeId, x));
+        Optional.ofNullable(exampleTask.getInitiatorId()).ifPresent(x -> queryWrapper.eq(Task::getInitiatorId, x));
+        Optional.ofNullable(exampleTask.getReceiverId()).ifPresent(x -> queryWrapper.eq(Task::getReceiverId, x));
+        Optional.ofNullable(exampleTask.getTypeId()).ifPresent(x -> queryWrapper.eq(Task::getTypeId, x));
+        Optional.ofNullable(exampleTask.getState()).ifPresent(x -> queryWrapper.eq(Task::getState, x));
 
+        return queryWrapper;
+    }
+    public ReturnObject listTaskByExampleAndPage(Task exampleTask, Integer page, Integer pageSize) {
+        // get data
+        Page<Task> taskPage = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Task> queryWrapper = getQueryWrapperByTask(exampleTask);
         Page<Task> tasks = this.baseMapper.selectPage(taskPage, queryWrapper);
 
+        // transform data to vo
         Page<TaskRetVo> taskRetVoPage = Common.transformPageVo(tasks, TaskRetVo.class);
         ReturnObject returnObject = Common.getPageRetVo(tasks, TaskRetVo.class);
         List<TaskRetVo> taskRetVos = taskRetVoPage.getRecords();
@@ -47,6 +54,30 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
             taskRetVo.setType(taskTypeService.getTypeName(tasks.getRecords().get(i).getTypeId()));
         }
         return returnObject;
+    }
+
+    public ReturnObject listTaskByExample(Task exampleTask) {
+        LambdaQueryWrapper<Task> queryWrapper = getQueryWrapperByTask(exampleTask);
+        List<Task> taskList = this.list(queryWrapper);
+        List<TaskRetVo> taskRetVoList = Common.transformListVo(taskList, TaskRetVo.class);
+
+        TaskRetVo taskRetVo;
+        for(int i=0;i<taskRetVoList.size();i++) {
+            taskRetVo = taskRetVoList.get(i);
+            taskRetVo.setType(taskTypeService.getTypeName(taskList.get(i).getTypeId()));
+        }
+        return null;
+    }
+
+    @Override
+    public ReturnObject listTask(Long initiatorId, Long receiverId, Long typeId, Integer page, Integer pageSize) {
+        Task exampleTask = Task.builder()
+                .initiatorId(initiatorId)
+                .receiverId(receiverId)
+                .typeId(typeId).build();
+
+//        return listTask(exampleTask, page, pageSize);
+        return null;
     }
 
     @Override
@@ -89,4 +120,14 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
         }
     }
 
+    @Override
+    public ReturnObject getUserAcceptedTask(Long userId) {
+        return null;
+//        this.listTask(null, userId, )
+//        LambdaQueryWrapper<Task> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        lambdaQueryWrapper
+//                .eq(Task::getReceiverId, userId);
+//        List<Task> taskList = this.list(lambdaQueryWrapper);
+//        re
+    }
 }

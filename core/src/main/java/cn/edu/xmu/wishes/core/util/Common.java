@@ -248,6 +248,83 @@ public class Common {
         return newVo;
     }
 
+    @FunctionalInterface
+    public interface Transformer<T> {
+        Object transformer(T var);
+    }
+
+    public static class Converter<T>  {
+        String sourceFieldName;
+        String targetFieldName;
+        Transformer<T> transformer;
+
+        public Converter(String sourceFieldName, String targetFieldName, Transformer<T> transformer) {
+            this.sourceFieldName = sourceFieldName;
+            this.targetFieldName = targetFieldName;
+            this.transformer = transformer;
+        }
+
+        public static <T> Converter<T> of(String sourceFieldName, String targetFieldName, Transformer<T> transformer) {
+            return new Converter<>(sourceFieldName,  targetFieldName, transformer);
+        }
+    }
+
+    public static <T> T cloneVo(Object bo, Class<T> voClass, Collection<Converter> converterCollection) {
+        Class<?> boClass = bo.getClass();
+        T newVo = null;
+        try {
+            //默认voClass有无参构造函数
+            newVo = voClass.getDeclaredConstructor().newInstance();
+            Field[] voFields = voClass.getDeclaredFields();
+            Field[] boFields = boClass.getDeclaredFields();
+            for (Field voField : voFields) {
+                //静态和Final不能拷贝
+                int mod = voField.getModifiers();
+                if (Modifier.isStatic(mod) || Modifier.isFinal(mod)) {
+                    continue;
+                }
+                voField.setAccessible(true);
+                Field boField;
+                // 字段类型和字段名都一样
+                boolean isSame = true;
+                String voFieldName = voField.getName();
+                try {
+                    boField = boClass.getDeclaredField(voFieldName);
+                    boField.setAccessible(true);
+                    Class<?> boFieldType = boField.getType();
+                    //属性名相同，类型相同，直接克隆
+                    if (voField.getType().equals(boFieldType)) {
+                        boField.setAccessible(true);
+                        Object newObject = boField.get(bo);
+                        voField.set(newVo, newObject);
+                        continue;
+                    }
+                }
+                //bo中查找不到对应的属性
+                catch (NoSuchFieldException e) {
+                }
+                //属性名相同，类型不同
+                for (Converter converter : converterCollection) {
+                    if (voFieldName.equals(converter.targetFieldName)) {
+                        try {
+                            boField = boClass.getDeclaredField(converter.sourceFieldName);
+                            boField.setAccessible(true);
+                            boField.setAccessible(true);
+                            Object newObject = converter.transformer.transformer(boField.get(bo));
+                            voField.set(newVo, newObject);
+                            break;
+                        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+                            logger.error(e.getMessage());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.toString());
+        }
+        return newVo;
+    }
+
     /**
      * @author xucangbai
      * @param returnObject
@@ -331,12 +408,12 @@ public class Common {
     }
 
 
-    public static ReturnObject getPageRetVo(IPage page, Class voClass){
+    public static ReturnObject getPageRetVo(IPage page, Class voClass, Collection<Converter> converterCollection){
         List records = page.getRecords();
         if (records != null){
             List<Object> voObjs = new ArrayList<>(records.size());
             for (Object data : records) {
-                voObjs.add(cloneVo(data,voClass));
+                voObjs.add(cloneVo(data, voClass, converterCollection));
             }
             Map<String, Object> ret = new HashMap<>();
             ret.put("list", voObjs);
@@ -346,7 +423,26 @@ public class Common {
             ret.put("pages", page.getPages());
             return new ReturnObject(ret);
         }else{
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
+            return ReturnObject.INTERNAL_SERVER_ERR_RET;
+        }
+    }
+
+    public static ReturnObject getPageRetVo(IPage page, Class voClass){
+        List records = page.getRecords();
+        if (records != null){
+            List<Object> voObjs = new ArrayList<>(records.size());
+            for (Object data : records) {
+                voObjs.add(cloneVo(data, voClass));
+            }
+            Map<String, Object> ret = new HashMap<>();
+            ret.put("list", voObjs);
+            ret.put("total", page.getTotal());
+            ret.put("page", page.getCurrent());
+            ret.put("pageSize", page.getSize());
+            ret.put("pages", page.getPages());
+            return new ReturnObject(ret);
+        }else{
+            return ReturnObject.INTERNAL_SERVER_ERR_RET;
         }
     }
 
@@ -472,5 +568,21 @@ public class Common {
         }else{
             return null;
         }
+    }
+
+    public static <T> List<T> transformListVo(List list, Class<T> voClass) {
+        List<T> voObjs = new ArrayList<>(list.size());
+        for (Object data : list) {
+            voObjs.add(cloneVo(data,voClass));
+        }
+        return voObjs;
+    }
+
+    public static <T> List<T> transformListVo(List list, Class<T> voClass, Collection<Converter> converterCollection) {
+        List<T> voObjs = new ArrayList<>(list.size());
+        for (Object data : list) {
+            voObjs.add(cloneVo(data,voClass, converterCollection));
+        }
+        return voObjs;
     }
 }

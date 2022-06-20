@@ -6,11 +6,13 @@ import cn.edu.xmu.wishes.task.model.vo.TaskVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface TaskService extends IService<Task> {
-    ReturnObject listTask(Long initiatorId, Long typeId, Integer page, Integer pageSize);
+    ReturnObject listTask(Long initiatorId, Long receiverId, Long typeId, Integer page, Integer pageSize);
 
     ReturnObject<Task> getTaskById(Long id);
 
     ReturnObject saveOrUpdateTask(Long userId, Long taskId, TaskVo taskVo);
 
     ReturnObject acceptTask(Long taskId, Long userId);
+
+    ReturnObject getUserAcceptedTask(Long userId);
 }

@@ -92,7 +92,7 @@ public class TaskController {
     @GetMapping("/task")
     public Object listTask(@RequestParam(required = false) Long initiatorId,  @RequestParam(required = false) Long typeId,
                            @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
-        return Common.decorateReturnObject(taskService.listTask(initiatorId, typeId, page, pageSize));
+        return Common.decorateReturnObject(taskService.listTask(initiatorId, null, typeId, page, pageSize));
     }
 
     @ApiOperation("用户接取任务")
@@ -100,5 +100,12 @@ public class TaskController {
     public Object acceptTask(@PathVariable("id") Long taskId) {
         Long userId = UserInfoUtil.getUserId();
         return Common.decorateReturnObject(taskService.acceptTask(taskId, userId));
+    }
+
+    @ApiOperation("用户查看自己接取的任务")
+    @GetMapping("/task/user/accepted")
+    public Object getUserAcceptedTask() {
+        Long userId = UserInfoUtil.getUserId();
+        return Common.decorateReturnObject(taskService.getUserAcceptedTask(userId));
     }
 }
