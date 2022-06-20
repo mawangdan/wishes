@@ -132,4 +132,15 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
 
         return listTaskByExample(exampleTask);
     }
+
+
+    @Override
+    public ReturnObject getUserPublishedTask(Long userId, Long typeId) {
+        Task exampleTask = Task.builder()
+                .initiatorId(userId)
+                .typeId(typeId)
+                .build();
+
+        return listTaskByExample(exampleTask);
+    }
 }

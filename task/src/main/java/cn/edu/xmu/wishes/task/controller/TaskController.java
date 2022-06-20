@@ -102,10 +102,25 @@ public class TaskController {
         return Common.decorateReturnObject(taskService.acceptTask(taskId, userId));
     }
 
+    /**
+     * @param typeId 接取的任务类型Id
+     * @return 返回值中的data是一个数组，当不存在相应任务时，该数组为空
+     */
     @ApiOperation("用户查看自己接取的任务")
     @GetMapping("/task/user/accepted")
     public Object getUserAcceptedTask(@RequestParam Long typeId) {
         Long userId = UserInfoUtil.getUserId();
         return Common.decorateReturnObject(taskService.getUserAcceptedTask(userId, typeId));
+    }
+
+    /**
+     * @param typeId 接取的任务类型Id
+     * @return 返回值中的data是一个数组，当不存在相应任务时，该数组为空
+     */
+    @ApiOperation("用户查看自己发布发任务")
+    @GetMapping("/task/user/published")
+    public Object getUserPublishedTask(@RequestParam Long typeId) {
+        Long userId = UserInfoUtil.getUserId();
+        return Common.decorateReturnObject(taskService.getUserPublishedTask(userId, typeId));
     }
 }
