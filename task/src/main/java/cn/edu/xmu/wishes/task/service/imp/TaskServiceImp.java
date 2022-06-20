@@ -66,7 +66,7 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
             taskRetVo = taskRetVoList.get(i);
             taskRetVo.setType(taskTypeService.getTypeName(taskList.get(i).getTypeId()));
         }
-        return null;
+        return new ReturnObject(taskRetVoList);
     }
 
     @Override
@@ -76,8 +76,7 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
                 .receiverId(receiverId)
                 .typeId(typeId).build();
 
-//        return listTask(exampleTask, page, pageSize);
-        return null;
+        return listTaskByExampleAndPage(exampleTask, page, pageSize);
     }
 
     @Override
@@ -116,18 +115,21 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
         if (isUpdated) {
             return ReturnObject.OK_RET;
         } else {
-            return new ReturnObject(ReturnNo.AUTH_NO_RIGHT, "任务不存在或已被接取");
+            Task task = this.getById(taskId);
+            if (task == null) {
+                return ReturnObject.RESOURCE_ID_NOTEXIST_RET;
+            }
+            return new ReturnObject(ReturnNo.AUTH_NO_RIGHT, "任务已被接取");
         }
     }
 
     @Override
-    public ReturnObject getUserAcceptedTask(Long userId) {
-        return null;
-//        this.listTask(null, userId, )
-//        LambdaQueryWrapper<Task> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        lambdaQueryWrapper
-//                .eq(Task::getReceiverId, userId);
-//        List<Task> taskList = this.list(lambdaQueryWrapper);
-//        re
+    public ReturnObject getUserAcceptedTask(Long userId, Long typeId) {
+        Task exampleTask = Task.builder()
+                .receiverId(userId)
+                .typeId(typeId)
+                .build();
+
+        return listTaskByExample(exampleTask);
     }
 }
