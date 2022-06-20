@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface TaskService extends IService<Task> {
     ReturnObject listTask(Long initiatorId, Long typeId, Integer page, Integer pageSize);
 
-    ReturnObject getTaskById(Long id);
+    ReturnObject<Task> getTaskById(Long id);
 
     ReturnObject saveOrUpdateTask(Long userId, Long taskId, TaskVo taskVo);
 }

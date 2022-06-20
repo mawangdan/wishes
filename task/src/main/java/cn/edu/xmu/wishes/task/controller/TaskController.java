@@ -6,92 +6,19 @@ import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.core.util.UserInfoUtil;
 import cn.edu.xmu.wishes.core.util.storage.StorageUtil;
 import cn.edu.xmu.wishes.task.model.po.Task;
-import cn.edu.xmu.wishes.task.model.vo.TaskDraftVo;
 import cn.edu.xmu.wishes.task.model.vo.TaskVo;
-import cn.edu.xmu.wishes.task.service.TaskDraftService;
 import cn.edu.xmu.wishes.task.service.TaskService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/", produces = "application/json;charset=UTF-8")
 public class TaskController {
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private TaskDraftService taskDraftService;
-
-    private static final Integer IMAGE_MAX_SIZE=1000000;
-
-    /**
-     * 新增草稿任务
-     * @param taskDraftVo
-     * @return
-     */
-    @ApiOperation("新增草稿任务")
-    @PostMapping("/taskdraft/add")
-    public Object createTaskDraft(@Validated @RequestBody TaskDraftVo taskDraftVo) {
-        return Common.decorateReturnObject(taskDraftService.insertTaskDraft(taskDraftVo));
-    }
-
-    /**
-     * 通过id获取草稿任务
-     * @param id
-     * @return
-     */
-    @ApiOperation("通过id获取草稿任务")
-    @GetMapping("/taskdraft/{id}")
-    public Object getTaskDraftById(@PathVariable("id") Long id) {
-        return Common.decorateReturnObject(taskDraftService.getTaskDraftById(id));
-    }
-
-    /**
-     * 为草稿任务上传图片
-     * @param id
-     * @param request
-     * @return
-     */
-    @ApiOperation("为草稿任务上传图片")
-    @PostMapping("/taskdraft/{id}/uploadImg")
-    public Object uploadTaskImage(@PathVariable Long id, HttpServletRequest request) {
-
-        //对输入数据进行合法性判断
-        List<MultipartFile> files = ((MultipartHttpServletRequest) request)
-                .getFiles("file");
-        if(files.size()<=0){
-            return Common.decorateReturnObject(new ReturnObject<>(ReturnNo.FIELD_NOTVALID));
-        }
-        //图片超限
-        if (files.stream().anyMatch((multipartFile -> multipartFile.getSize() > IMAGE_MAX_SIZE))) {
-            return Common.decorateReturnObject(new ReturnObject<>(ReturnNo.IMG_SIZE_EXCEED));
-        }
-        return Common.decorateReturnObject(taskDraftService.uploadTaskImage(id, files));
-
-    }
-
-    /**
-     * 修改草稿任务
-     * @param id
-     * @param taskDraftVo
-     * @return
-     */
-    @ApiOperation("修改草稿任务")
-    @PutMapping("/taskdraft/{id}")
-    public Object updateTaskDraft(@PathVariable Long id, @RequestBody @Validated TaskDraftVo taskDraftVo) {
-        Long userId = UserInfoUtil.getUserId();
-        if (!userId.equals(taskDraftVo.getInitiatorId())) {
-            return Common.decorateReturnObject(new ReturnObject(ReturnNo.AUTH_NO_RIGHT));
-        }
-        return Common.decorateReturnObject(taskDraftService.updateTaskDraft(id, taskDraftVo));
-    }
 
     /**
      * 上传文件
@@ -104,7 +31,7 @@ public class TaskController {
     public Object uploadFile(@RequestParam(value = "file") MultipartFile file) throws Exception {
         try {
             if (file == null) {
-                return Common.decorateReturnObject(new ReturnObject(ReturnNo.FILE_NOT_EXIST));
+                return Common.decorateReturnObject(ReturnObject.FILE_NOT_EXIST_RET);
             }
 
             String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
@@ -126,11 +53,12 @@ public class TaskController {
     @PutMapping("/task/{id}")
     public Object updateTask(@PathVariable("id") Long taskId, @RequestBody @Validated TaskVo taskVo) {
         Long userId = UserInfoUtil.getUserId();
-        Task task = taskService.getById(taskId);
-        if (task == null) {
+
+        ReturnObject<Task> retObj = taskService.getTaskById(taskId);
+        if (retObj.getCode() != ReturnNo.OK) {
             return Common.decorateReturnObject(ReturnObject.RESOURCE_ID_NOTEXIST_RET);
         }
-        else if (!task.getInitiatorId().equals(userId)) {
+        else if (!retObj.getData().getInitiatorId().equals(userId)) {
             return Common.decorateReturnObject(ReturnObject.RESOURCE_ID_OUTSCOPE_RET);
         }
         return Common.decorateReturnObject(taskService.saveOrUpdateTask(userId, taskId, taskVo));

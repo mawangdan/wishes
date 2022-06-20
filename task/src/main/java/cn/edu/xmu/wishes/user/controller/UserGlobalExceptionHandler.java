@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class UserGlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public Object handleException(Exception e) {
         log.error(e.getStackTrace()[0] + "\n" + e.getMessage());

@@ -50,12 +50,12 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
 
     @Override
     @Cacheable(cacheNames = taskCacheKey, key = "#id")
-    public ReturnObject getTaskById(Long id) {
+    public ReturnObject<Task> getTaskById(Long id) {
         Task task = this.getById(id);
         if (task == null) {
-            return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST);
+            return new ReturnObject<>(ReturnNo.RESOURCE_ID_NOTEXIST);
         } else {
-            return new ReturnObject(task);
+            return new ReturnObject<>(task);
         }
     }
 
