@@ -40,9 +40,11 @@ public class Task extends BaseEntity {
     private Byte beDeleted;
 
     public enum StateType {
-        NORMAL(0, "正常"),
-        FINISHED(1, "已完成"),
-        BANNED(2, "封禁");
+        NOT_ACCEPTED(0, "未接取"),
+        ACCEPTED(1, "已接取"),
+        FINISHED(2, "已完成"),
+        OFFLINE(3, "下线"),
+        BANNED(4, "封禁");
 
         private static final Map<Integer, StateType> TYPE_MAP;
 

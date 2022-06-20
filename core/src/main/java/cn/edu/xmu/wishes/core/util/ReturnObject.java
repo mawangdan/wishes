@@ -8,6 +8,7 @@ import lombok.Getter;
  **/
 @Getter
 public class ReturnObject<T> {
+    public static ReturnObject OK_RET = new ReturnObject(ReturnNo.OK);
     public static ReturnObject INTERNAL_SERVER_ERR_RET = new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
     public static ReturnObject AUTH_INVALID_JWT_RET = new ReturnObject(ReturnNo.AUTH_INVALID_JWT);
     public static ReturnObject AUTH_JWT_EXPIRED_RET = new ReturnObject(ReturnNo.AUTH_JWT_EXPIRED);

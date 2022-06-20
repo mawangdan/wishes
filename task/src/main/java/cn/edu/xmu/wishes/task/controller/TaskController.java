@@ -94,4 +94,11 @@ public class TaskController {
                            @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
         return Common.decorateReturnObject(taskService.listTask(initiatorId, typeId, page, pageSize));
     }
+
+    @ApiOperation("用户接取任务")
+    @PostMapping("/task/{id}:accept")
+    public Object acceptTask(@PathVariable("id") Long taskId) {
+        Long userId = UserInfoUtil.getUserId();
+        return Common.decorateReturnObject(taskService.acceptTask(taskId, userId));
+    }
 }

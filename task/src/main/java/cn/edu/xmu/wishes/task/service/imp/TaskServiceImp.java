@@ -10,6 +10,7 @@ import cn.edu.xmu.wishes.task.model.vo.TaskVo;
 import cn.edu.xmu.wishes.task.service.TaskService;
 import cn.edu.xmu.wishes.task.service.TaskTypeService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -69,6 +70,22 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
             return new ReturnObject();
         } else {
             return ReturnObject.INTERNAL_SERVER_ERR_RET;
+        }
+    }
+
+    @Override
+    public ReturnObject acceptTask(Long taskId, Long userId) {
+        LambdaUpdateWrapper<Task> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper
+                .eq(Task::getId, userId)
+                .eq(Task::getState, Task.StateType.NOT_ACCEPTED)
+                .set(Task::getState, Task.StateType.ACCEPTED)
+                .set(Task::getReceiverId, userId);
+        boolean isUpdated = this.update(updateWrapper);
+        if (isUpdated) {
+            return ReturnObject.OK_RET;
+        } else {
+            return new ReturnObject(ReturnNo.AUTH_NO_RIGHT, "任务不存在或已被接取");
         }
     }
 

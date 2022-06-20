@@ -11,4 +11,6 @@ public interface TaskService extends IService<Task> {
     ReturnObject<Task> getTaskById(Long id);
 
     ReturnObject saveOrUpdateTask(Long userId, Long taskId, TaskVo taskVo);
+
+    ReturnObject acceptTask(Long taskId, Long userId);
 }
