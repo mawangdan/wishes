@@ -74,7 +74,9 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
         Task exampleTask = Task.builder()
                 .initiatorId(initiatorId)
                 .receiverId(receiverId)
-                .typeId(typeId).build();
+                .typeId(typeId)
+                .state(Task.StateType.NOT_ACCEPTED)
+                .build();
 
         return listTaskByExampleAndPage(exampleTask, page, pageSize);
     }
