@@ -1,7 +1,6 @@
 package cn.edu.xmu.wishes.task.controller;
 
 import cn.edu.xmu.wishes.core.util.Common;
-import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
 import cn.edu.xmu.wishes.core.util.UserInfoUtil;
 import cn.edu.xmu.wishes.core.util.storage.StorageUtil;
@@ -54,11 +53,11 @@ public class TaskController {
     public Object updateTask(@PathVariable("id") Long taskId, @RequestBody @Validated TaskVo taskVo) {
         Long userId = UserInfoUtil.getUserId();
 
-        ReturnObject<Task> retObj = taskService.getTaskById(taskId);
-        if (retObj.getCode() != ReturnNo.OK) {
+        Task task = taskService.getById(taskId);
+        if (task == null) {
             return Common.decorateReturnObject(ReturnObject.RESOURCE_ID_NOTEXIST_RET);
         }
-        else if (!retObj.getData().getInitiatorId().equals(userId)) {
+        else if (!task.getInitiatorId().equals(userId)) {
             return Common.decorateReturnObject(ReturnObject.RESOURCE_ID_OUTSCOPE_RET);
         }
         return Common.decorateReturnObject(taskService.saveOrUpdateTask(userId, taskId, taskVo));

@@ -43,7 +43,6 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
         Page<Task> taskPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Task> queryWrapper = getQueryWrapperByTask(exampleTask);
         Page<Task> tasks = this.baseMapper.selectPage(taskPage, queryWrapper);
-
         // transform data to vo
         Page<TaskRetVo> taskRetVoPage = Common.transformPageVo(tasks, TaskRetVo.class);
         ReturnObject returnObject = Common.getPageRetVo(tasks, TaskRetVo.class);
@@ -83,12 +82,14 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
 
     @Override
     @Cacheable(cacheNames = taskCacheKey, key = "#id")
-    public ReturnObject<Task> getTaskById(Long id) {
+    public ReturnObject<TaskRetVo> getTaskById(Long id) {
         Task task = this.getById(id);
         if (task == null) {
             return new ReturnObject<>(ReturnNo.RESOURCE_ID_NOTEXIST);
         } else {
-            return new ReturnObject<>(task);
+            TaskRetVo taskRetVo = Common.cloneVo(task, TaskRetVo.class);
+            taskRetVo.setType(taskTypeService.getTypeName(task.getTypeId()));
+            return new ReturnObject<>(taskRetVo);
         }
     }
 

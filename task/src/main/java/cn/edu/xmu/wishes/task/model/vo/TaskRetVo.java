@@ -4,6 +4,8 @@ import lombok.Data;
 
 @Data
 public class TaskRetVo {
+    private Long id;
+
     private Long initiatorId;
 
     private Long receiverId;

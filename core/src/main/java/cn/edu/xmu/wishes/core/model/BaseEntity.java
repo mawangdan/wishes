@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * 实体基类
@@ -18,22 +18,24 @@ public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 5315085444565595538L;
 
     @TableId(type = IdType.AUTO)
-    private Long id;
+    protected Long id;
 
     @TableField(fill = FieldFill.INSERT)
-    private Long creatorId;
+    protected Long creatorId;
 
     @TableField(fill = FieldFill.INSERT)
-    private String creatorName;
+    protected String creatorName;
 
     @TableField(fill = FieldFill.UPDATE)
-    private Long modifierId;
+    protected Long modifierId;
 
     @TableField(fill = FieldFill.UPDATE)
-    private String modifierName;
+    protected String modifierName;
 
-    private LocalDateTime gmtCreate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    protected LocalDateTime gmtCreate;
 
     @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime gmtModified;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    protected LocalDateTime gmtModified;
 }
