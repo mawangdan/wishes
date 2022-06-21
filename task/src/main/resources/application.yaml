@@ -80,9 +80,9 @@ spring:
     timeout: 5000
     host: localhost
 
-mybatis-plus:
-  configuration:
-    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+#mybatis-plus:
+#  configuration:
+#    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
 #mybatis:
 #  type-aliases-package: cn.edu.xmu.wishes.chat.model.po
 #  mapper-locations: classpath*:cn.edu.xmu.wishes.chat.mapper/*.xml

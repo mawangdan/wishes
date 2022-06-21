@@ -110,7 +110,7 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
     public ReturnObject acceptTask(Long taskId, Long userId) {
         LambdaUpdateWrapper<Task> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper
-                .eq(Task::getId, userId)
+                .eq(Task::getId, taskId)
                 .eq(Task::getState, Task.StateType.NOT_ACCEPTED)
                 .set(Task::getState, Task.StateType.ACCEPTED)
                 .set(Task::getReceiverId, userId);

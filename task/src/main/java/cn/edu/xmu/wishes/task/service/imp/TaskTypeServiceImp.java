@@ -12,6 +12,11 @@ public class TaskTypeServiceImp extends ServiceImpl<TaskTypeMapper, TaskType> im
     @Override
     @Cacheable("task.type.name")
     public String getTypeName(Long typeId) {
-        return this.getById(typeId).getName();
+        TaskType taskType = this.getById(typeId);
+        if (taskType == null) {
+            return "未知";
+        } else {
+            return taskType.getName();
+        }
     }
 }

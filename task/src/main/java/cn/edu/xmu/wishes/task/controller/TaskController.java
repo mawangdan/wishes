@@ -107,7 +107,7 @@ public class TaskController {
      */
     @ApiOperation("用户查看自己接取的任务")
     @GetMapping("/task/user/accepted")
-    public Object getUserAcceptedTask(@RequestParam Long typeId) {
+    public Object getUserAcceptedTask(@RequestParam(required = false) Long typeId) {
         Long userId = UserInfoUtil.getUserId();
         return Common.decorateReturnObject(taskService.getUserAcceptedTask(userId, typeId));
     }

@@ -3,7 +3,6 @@ package cn.edu.xmu.wishes.core.util;
 import cn.edu.xmu.wishes.core.constants.SecurityConstants;
 import cn.edu.xmu.wishes.core.exception.UnAuthException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -17,7 +16,6 @@ public class UserInfoUtil {
         try {
             HttpServletRequest httpServletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String payload = httpServletRequest.getHeader(SecurityConstants.JWT_PAYLOAD_KEY);
-            Assert.notNull(payload, "http header not exist jwt payload");
 
             String decodePayload = URLDecoder.decode(payload, "UTF-8");
             Long userId = JacksonUtil.parseObject(decodePayload, "userId", Long.class);
