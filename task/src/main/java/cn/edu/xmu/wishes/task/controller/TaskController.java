@@ -118,8 +118,18 @@ public class TaskController {
      */
     @ApiOperation("用户查看自己发布发任务")
     @GetMapping("/task/user/published")
-    public Object getUserPublishedTask(@RequestParam Long typeId) {
+    public Object getUserPublishedTask(@RequestParam(required = false) Long typeId) {
         Long userId = UserInfoUtil.getUserId();
         return Common.decorateReturnObject(taskService.getUserPublishedTask(userId, typeId));
+    }
+
+    /**
+     * @param taskId 任务Id
+     */
+    @ApiOperation("用户删除自己发布的任务")
+    @DeleteMapping("/task/{id}")
+    public Object deleteUserTask(@PathVariable("id") Long taskId) {
+        Long userId = UserInfoUtil.getUserId();
+        return Common.decorateReturnObject(taskService.deleteUserTask(userId, taskId));
     }
 }

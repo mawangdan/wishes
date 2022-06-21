@@ -146,4 +146,18 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
 
         return listTaskByExample(exampleTask);
     }
+
+    @Override
+    public ReturnObject deleteUserTask(Long userId, Long taskId) {
+        LambdaQueryWrapper<Task> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper
+                .eq(Task::getId, taskId)
+                .eq(Task::getInitiatorId, userId);
+        boolean isRemove = this.remove(lambdaQueryWrapper);
+        if (isRemove) {
+            return ReturnObject.OK_RET;
+        } else {
+            return new ReturnObject(ReturnNo.RESOURCE_ID_OUTSCOPE, "该任务不属于你或不存在");
+        }
+    }
 }

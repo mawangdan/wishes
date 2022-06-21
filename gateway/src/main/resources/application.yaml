@@ -45,5 +45,6 @@ wishes:
       key: app.pub
   security:
     ignoreUrls:
-      - /user/oauth/**
+      - /oauth/**
+      - /task/**
       - /webjars/**
