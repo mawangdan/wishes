@@ -132,4 +132,14 @@ public class TaskController {
         Long userId = UserInfoUtil.getUserId();
         return Common.decorateReturnObject(taskService.deleteUserTask(userId, taskId));
     }
+
+    /**
+     * @param taskId 任务Id
+     */
+    @ApiOperation("用户删除自己发布的任务")
+    @PostMapping("/task/{id}:unaccept")
+    public Object cancelAcceptTask(@PathVariable("id") Long taskId) {
+        Long userId = UserInfoUtil.getUserId();
+        return Common.decorateReturnObject(taskService.cancelAcceptTask(userId, taskId));
+    }
 }
