@@ -43,16 +43,16 @@ public class TaskServiceImp extends ServiceImpl<TaskMapper, Task> implements Tas
         Page<Task> taskPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Task> queryWrapper = getQueryWrapperByTask(exampleTask);
         Page<Task> tasks = this.baseMapper.selectPage(taskPage, queryWrapper);
+
         // transform data to vo
         Page<TaskRetVo> taskRetVoPage = Common.transformPageVo(tasks, TaskRetVo.class);
-        ReturnObject returnObject = Common.getPageRetVo(tasks, TaskRetVo.class);
         List<TaskRetVo> taskRetVos = taskRetVoPage.getRecords();
         TaskRetVo taskRetVo;
         for(int i=0;i<taskRetVos.size();i++) {
             taskRetVo = taskRetVos.get(i);
             taskRetVo.setType(taskTypeService.getTypeName(tasks.getRecords().get(i).getTypeId()));
         }
-        return returnObject;
+        return new ReturnObject(taskRetVoPage);
     }
 
     public ReturnObject listTaskByExample(Task exampleTask) {

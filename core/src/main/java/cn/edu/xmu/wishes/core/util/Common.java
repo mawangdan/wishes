@@ -474,16 +474,18 @@ public class Common {
         return incr;
     }
 
-    public static <T> Page<T> transformPageVo(Page page, Class<T> voClass) {
-        List records = page.getRecords();
+    public static <T, K> Page<T> transformPageVo(Page<K> page, Class<T> voClass) {
+        List<K> records = page.getRecords();
         if (records != null){
-            List<Object> voObjs = new ArrayList<>(records.size());
+            List<T> voObjs = new ArrayList<>(records.size());
             for (Object data : records) {
                 voObjs.add(cloneVo(data,voClass));
             }
+            Page<T> voPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+            voPage.setRecords(voObjs);
+            return voPage;
+        } else{
             return new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
-        }else{
-            return null;
         }
     }
 
