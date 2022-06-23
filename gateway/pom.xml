@@ -140,7 +140,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>cn.edu.xmu.privilegegateway.othergateway.GatewayApplication</mainClass>
+                    <mainClass>cn.edu.xmu.wishes.gateway.GatewayApplication</mainClass>
                 </configuration>
             </plugin>
 
