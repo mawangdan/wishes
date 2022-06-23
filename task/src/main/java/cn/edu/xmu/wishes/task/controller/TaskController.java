@@ -7,6 +7,7 @@ import cn.edu.xmu.wishes.core.util.storage.StorageUtil;
 import cn.edu.xmu.wishes.task.model.po.Task;
 import cn.edu.xmu.wishes.task.model.vo.TaskVo;
 import cn.edu.xmu.wishes.task.service.TaskService;
+import cn.edu.xmu.wishes.task.service.TaskTypeService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class TaskController {
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TaskTypeService taskTypeService;
 
     /**
      * 上传文件
@@ -77,6 +81,12 @@ public class TaskController {
     @GetMapping("/task/{id}")
     public Object getTaskById(@PathVariable("id") Long id) {
         return Common.decorateReturnObject(taskService.getTaskById(id));
+    }
+
+    @ApiOperation("获取所有的任务类型")
+    @GetMapping("/task/type")
+    public Object getAllTaskType() {
+        return Common.decorateReturnObject(new ReturnObject(taskTypeService.list()));
     }
 
     /**
