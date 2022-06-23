@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRetVo {
+    private Long id;
+
     private String userName;
 
     private String sign;
@@ -17,6 +19,8 @@ public class UserRetVo {
     private String mobile;
 
     private String email;
+
+    private String preferTaskType;
 
 //    @NotBlank(message = "真实姓名不能为空")
 //    private String name;

@@ -15,8 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SecurityUser implements UserDetails {
-    private static final long serialVersionUID= 1305917476121918181L;
-
     private User user;
 
     private List<AuthRole> roleList;

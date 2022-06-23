@@ -22,8 +22,6 @@ import java.util.Map;
 @Accessors(chain = true)
 @TableName("wishes_user")
 public class User extends BaseEntity{
-    private static final long serialVersionUID= 6639174068030831707L;
-
     private String userName;
 
     private String password;
@@ -39,6 +37,8 @@ public class User extends BaseEntity{
     private Type state;
 
     private String email;
+
+    private String preferTaskType;
 
     private String mobile;
 

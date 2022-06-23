@@ -12,6 +12,7 @@ CREATE TABLE `wishes_user` (
                                    `state` tinyint(4) DEFAULT '0',
                                    `email` varchar(255) DEFAULT NULL,
                                    `mobile` varchar(255) DEFAULT NULL,
+                                   `prefer_task_type` varchar(255) DEFAULT NULL,
                                    `student_id` varchar(255) DEFAULT NULL,
                                    `be_deleted` tinyint(4) DEFAULT '0',
                                    `creator_id` bigint(20) DEFAULT NULL,

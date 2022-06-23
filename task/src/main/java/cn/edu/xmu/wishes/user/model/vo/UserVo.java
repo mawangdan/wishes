@@ -11,8 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserVo implements Serializable {
-    private static final long serialVersionUID = 8538221577807401236L;
-
     @NotBlank(message = "用户名不能为空")
     private String userName;
     @NotBlank(message = "密码不能为空")
@@ -27,9 +25,7 @@ public class UserVo implements Serializable {
 //            , message = "手机号格式错误")
     private String mobile;
 
-//    @NotBlank(message = "邮箱不能为空")
     private String email;
 
-//    @NotBlank(message = "真实姓名不能为空")
-//    private String name;
+    private String preferTaskType;
 }
