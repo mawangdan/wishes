@@ -49,3 +49,4 @@ wishes:
       - /task/**
       - /webjars/**
       - /users
+      - /**
