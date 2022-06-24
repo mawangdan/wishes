@@ -48,3 +48,4 @@ wishes:
       - /oauth/**
       - /task/**
       - /webjars/**
+      - /users
