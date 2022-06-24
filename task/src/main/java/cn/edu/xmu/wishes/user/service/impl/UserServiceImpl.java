@@ -68,13 +68,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             if (userList.size() > 0) {
                 for(User user1 : userList) {
-                    if (user1.getUserName().equals(userVo.getUserName())) {
+                    if (user1.getUserName() != null && user1.getUserName().equals(userVo.getUserName())) {
                         return new ReturnObject(ReturnNo.CUSTOMER_NAMEEXIST);
                     }
-                    else if (user1.getMobile().equals(userVo.getMobile())) {
+                    else if (user1.getMobile() != null && user1.getMobile().equals(userVo.getMobile())) {
                         return new ReturnObject(ReturnNo.CUSTOMER_MOBILEEXIST);
                     }
-                    else if (user1.getEmail().equals(userVo.getEmail())) {
+                    else if (user1.getEmail() != null && user1.getEmail().equals(userVo.getEmail())) {
                         return new ReturnObject(ReturnNo.CUSTOMER_EMAILEXIST);
                     }
                 }
