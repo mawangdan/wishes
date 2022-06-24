@@ -9,6 +9,7 @@ import cn.edu.xmu.wishes.user.mapper.UserMapper;
 import cn.edu.xmu.wishes.user.model.po.User;
 import cn.edu.xmu.wishes.user.model.vo.*;
 import cn.edu.xmu.wishes.user.service.UserService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -231,9 +232,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public ReturnObject changeUserPassword(Long userId, NewPasswordVo vo) {
+    public ReturnObject changeUserPassword(String userEmail, NewPasswordVo vo) {
         try {
-            User user = this.getById(userId);
+            LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(User::getEmail, userEmail);
+            User user = this.getOne(lambdaQueryWrapper);
+            if (user == null) {
+                return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "该邮箱未注册");
+            }
             if (!user.getPassword().equals(vo.getOldPassword())) {
                 return new ReturnObject(ReturnNo.CUSTOMER_PASSWORDWRONG);
             }

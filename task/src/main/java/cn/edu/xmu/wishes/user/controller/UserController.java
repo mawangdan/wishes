@@ -174,8 +174,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 0, message = "成功")
     })
-    @PutMapping("/password")
-    public Object changePassword(@Validated @RequestBody NewPasswordVo vo,
+    @PutMapping("/password/{userEmail}")
+    public Object changePassword(@PathVariable("userEmail") String userEmail, @Validated @RequestBody NewPasswordVo vo,
                                  BindingResult bindingResult)
     {
         Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
@@ -183,7 +183,7 @@ public class UserController {
         {
             return o;
         }
-        return Common.decorateReturnObject(userService.changeUserPassword(UserInfoUtil.getUserId(), vo));
+        return Common.decorateReturnObject(userService.changeUserPassword(userEmail, vo));
     }
 }
 

@@ -15,5 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
-    ReturnObject changeUserPassword(Long userId, NewPasswordVo vo);
+    ReturnObject changeUserPassword(String userEmail, NewPasswordVo vo);
 }
