@@ -2,17 +2,16 @@ package cn.edu.xmu.wishes.user.controller;
 
 
 import cn.edu.xmu.wishes.core.util.*;
-import cn.edu.xmu.wishes.user.model.vo.CaptchaVo;
+import cn.edu.xmu.wishes.user.model.po.User;
 import cn.edu.xmu.wishes.user.model.vo.NewPasswordVo;
 import cn.edu.xmu.wishes.user.model.vo.SimpleUserVo;
 import cn.edu.xmu.wishes.user.model.vo.UserVo;
 import cn.edu.xmu.wishes.user.service.impl.UserServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -40,24 +39,17 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
-    @Autowired
-    private TokenEndpoint tokenEndpoint;
 
     /**
      * 用户登录
-     * @param principal
-     * @param parameters
      * @return
      * @throws HttpRequestMethodNotSupportedException
      */
     @ApiOperation(value = "用户登录")
     @PostMapping("/oauth/token")
-    public Object postAccessToken(
-            @ApiIgnore Principal principal,
-            @ApiIgnore @RequestParam Map<String, String> parameters
-    ) throws HttpRequestMethodNotSupportedException {
-        OAuth2AccessToken accessToken = tokenEndpoint.postAccessToken(principal, parameters).getBody();
-        return ResponseUtil.ok(accessToken);
+    public Object postAccessToken(@RequestBody UserVo vo
+    ){
+        return userService.isValid(vo);
     }
     /**
      * 用户注册
@@ -82,19 +74,19 @@ public class UserController {
         return new ResponseEntity(ResponseUtil.ok(returnObject.getData()), HttpStatus.CREATED);
     }
 
-    /**
+    /**已经弃用
      * 上传注册验证码
      * @param captcha
      * @param bindingResult
      * @return
      */
     @PostMapping("/users/captcha")
-    public Object verifyLoginUpCaptcha(@Validated @RequestBody CaptchaVo captcha, BindingResult bindingResult) {
+    public Object verifyLoginUpCaptcha(BindingResult bindingResult) {
         Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
         if(o!=null) {
             return o;
         }
-        return Common.decorateReturnObject(userService.verifyLoginUpCaptcha(captcha));
+        return Common.decorateReturnObject(null);
     }
 
     /**
@@ -105,7 +97,7 @@ public class UserController {
     @PostMapping("/logout")
     public Object logout() {
         Long userId = UserInfoUtil.getUserId();
-        return Common.decorateReturnObject(userService.logout(userId));
+        return Common.decorateReturnObject(new ReturnObject());
     }
 
     /**
@@ -174,8 +166,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 0, message = "成功")
     })
-    @PutMapping("/password/{userEmail}")
-    public Object changePassword(@PathVariable("userEmail") String userEmail, @Validated @RequestBody NewPasswordVo vo,
+    @PutMapping("/user/update")
+    public Object changePassword(@Validated @RequestBody NewPasswordVo vo,
                                  BindingResult bindingResult)
     {
         Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
@@ -183,7 +175,9 @@ public class UserController {
         {
             return o;
         }
-        return Common.decorateReturnObject(userService.changeUserPassword(userEmail, vo));
+        return Common.decorateReturnObject(userService.changeUserPassword(vo.getUsername(), vo));
     }
+
+
 }
 

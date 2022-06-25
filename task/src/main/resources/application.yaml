@@ -28,8 +28,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/wishes?serverTimezone=GMT%2B8
-    username: dbuser
-    password: 12345678
+    username: root
+    password: 123456
     druid:
       initial-size: 3
       min-idle: 3
@@ -48,26 +48,6 @@ spring:
       validation-query: select 1
     sql-script-encoding: UTF-8
 
-  mail:
-    host: smtp.163.com
-    username: oomall2_4@163.com
-    password: HQQLBPJWWJRRLSXQ
-    properties:
-      mail:
-        smtp:
-          socketFactory:
-            class: javax.net.ssl.SSLSocketFactory
-          auth: true
-          starttls:
-            enable: true
-            required: true
-        imap:
-          ssl:
-            socketFactory:
-              rollback: false
-      from: oomall2_4@163.com
-    default-encoding: utf-8
-    protocol: smtps
 
   redis:
     database: 0
@@ -78,42 +58,5 @@ spring:
         min-idle: 0
         max-wait: -1
     timeout: 5000
-    host: localhost
+    host: 120.46.149.254
 
-#mybatis-plus:
-#  configuration:
-#    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
-#mybatis:
-#  type-aliases-package: cn.edu.xmu.wishes.chat.model.po
-#  mapper-locations: classpath*:cn.edu.xmu.wishes.chat.mapper/*.xml
-#  configuration:
-#    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#    map-underscore-to-camel-case: true
-
-user:
-  login:
-    jwt:
-      expire: 3600
-    captcha:
-      expire: 300
-
-  mail:
-    #邮件主题
-    subject: "【wishes】注册验证码"
-    #内容格式
-    format: "您的验证码是：%s 5分钟内有效"
-    from: "oomall2_4@163.com"
-
-wishes:
-  jwt:
-    private.key: classpath:app.key
-    public.key: classpath:app.pub
-  storage:
-    active: webdav
-
-    webdav:
-      url: http://122.9.37.63/webdav/
-      directory: task
-      username: dev
-      password: Wishes12345678
-      replaceStr: /webdav

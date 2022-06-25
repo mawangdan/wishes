@@ -4,7 +4,6 @@ import cn.edu.xmu.wishes.core.util.JwtHelper;
 import cn.edu.xmu.wishes.core.util.RedisUtil;
 import cn.edu.xmu.wishes.core.util.ReturnNo;
 import cn.edu.xmu.wishes.core.util.ReturnObject;
-import cn.edu.xmu.wishes.user.config.MailSenderProperty;
 import cn.edu.xmu.wishes.user.mapper.UserMapper;
 import cn.edu.xmu.wishes.user.model.po.User;
 import cn.edu.xmu.wishes.user.model.vo.*;
@@ -41,22 +40,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final static String USER_KEY="user_%d";
     private static final String CAPTCHA_KEY = "cap_%s";
 
-    @Value("${user.login.jwt.expire}")
-    private Integer USER_EXPIRE_TIME = 3600;
-
-    @Value("${user.login.captcha.expire}")
-    private Integer CAPTCHA_EXPIRE_TIME = 600;
 
     private static JwtHelper jwtHelper = new JwtHelper();
 
     @Autowired
     private RedisUtil redisUtil;
 
-    @Autowired
-    private JavaMailSender mailSender;
 
-    @Autowired
-    private MailSenderProperty mailProperty;
 
     @Transactional(rollbackFor = Exception.class)
     public ReturnObject registerUser(UserVo userVo) {
@@ -79,10 +69,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     }
                 }
             }
-
-            String userEmail = userVo.getEmail();
-            String captcha = createCaptcha(userVo);
-            sendEmail(captcha, userEmail);
+            User user = cloneVo(userVo, User.class);
+            save(user);
+//            String userEmail = userVo.getEmail();
+//            String captcha = createCaptcha(userVo);
+//            sendEmail(captcha, userEmail);
             return new ReturnObject();
         }
         catch (Exception e) {
@@ -91,66 +82,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
-    public String createCaptcha(Serializable value)
-    {
-        try {
-            //随机生成验证码
-            String captcha = getRandomString(6);
-            while (redisUtil.hasKey(captcha)) {
-                captcha = getRandomString(6);
-            }
 
-            String key =  String.format(CAPTCHA_KEY, captcha);
-            redisUtil.set(key, value, CAPTCHA_EXPIRE_TIME);
-            return captcha;
-        } catch (Exception e) {
-            log.error("captcha" + e.getMessage());
-            return null;
-        }
-    }
-    private ReturnObject sendEmail(String message,String to)
-    {
-        try
-        {
-            //发送邮件(请在配置文件application.properties填写密钥)
-            mailProperty.setText(String.format(mailProperty.getFormat(),message));
-            SimpleMailMessage msg =new SimpleMailMessage();
-            msg.setText(mailProperty.getText());
-            msg.setFrom(mailProperty.getFrom());
-            msg.setSentDate(new Date());
-            msg.setSubject(mailProperty.getSubject());
-            msg.setTo(to);
-            mailSender.send(msg);
-            return new ReturnObject(ReturnNo.OK);
-        }catch (MailException e)
-        {
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
-        }
-    }
 
-    public ReturnObject verifyLoginUpCaptcha(CaptchaVo captchaVo) {
-        try {
-            String key = String.format(CAPTCHA_KEY, captchaVo.getCaptcha());
-            //通过验证码取出id
-            if (!redisUtil.hasKey(key)) {
-                return new ReturnObject(ReturnNo.CUSTOMER_CAPTCHA_ERROR);
-            }
-
-            User user = cloneVo(redisUtil.get(key), User.class);
-            if (user != null && user.getEmail().equals(captchaVo.getEmail())) {
-                //删除redis中的验证码
-                redisUtil.del(key);
-                // 保存到数据库
-                save(user);
-                return new ReturnObject();
-            }
-            return new ReturnObject(ReturnNo.CUSTOMER_CAPTCHA_ERROR);
-        } catch (Exception e) {
-            log.error("verify captcha" + e.getMessage());
-            return new ReturnObject(ReturnNo.INTERNAL_SERVER_ERR);
-        }
-
-    }
 
     private String getRandomString(int length) {
         String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -165,46 +98,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
 
-    private void banJwt(String jwt) {
-        String[] banSetName = {"BanJwt_0", "BanJwt_1"};
-        String banIndexKey = "banIndex";
-        String scriptPath = "scripts/ban-jwt.lua";
 
-        DefaultRedisScript<Void> script = new DefaultRedisScript<>();
 
-        script.setScriptSource(new ResourceScriptSource(new ClassPathResource(scriptPath)));
-        script.setResultType(Void.class);
-
-        List<String> keyList = new ArrayList<>(List.of(banSetName));
-        keyList.add(banIndexKey);
-        redisUtil.executeScript(script, keyList, banSetName.length, jwt, USER_EXPIRE_TIME);
-    }
-
-    private void banToken(Long id)
-    {
-        String key = String.format(USER_KEY, id);
-        Set<Serializable> set = redisUtil.getSet(key);
-        String jwt = null;
-        for (Serializable str : set) {
-            /* 找出JWT */
-            if ((str.toString()).length() > 8) {
-                jwt = str.toString();
-                banJwt(jwt);
-            }
-        }
-        redisUtil.del(key);
-    }
-
-    public ReturnObject logout(Long userId)
-    {
-        try {
-            banToken(userId);
-            return new ReturnObject(ReturnNo.OK);
-        } catch (Exception e) {
-            log.error("logout " + e.getMessage());
-            throw e;
-        }
-    }
 
     @Transactional(readOnly = true)
     public ReturnObject getUserInfo(Long userId) {
@@ -232,21 +127,47 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public ReturnObject changeUserPassword(String userEmail, NewPasswordVo vo) {
+    public User getUserByName(String username) {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUserName, username);
+        User user = this.getOne(lambdaQueryWrapper);
+        return user;
+    }
+
+    @Override
+    public ReturnObject changeUserPassword(String username, NewPasswordVo vo) {
         try {
             LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            lambdaQueryWrapper.eq(User::getEmail, userEmail);
+            lambdaQueryWrapper.eq(User::getUserName, username);
             User user = this.getOne(lambdaQueryWrapper);
             if (user == null) {
-                return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "该邮箱未注册");
+                return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "该用户未注册");
             }
-            if (!user.getPassword().equals(vo.getOldPassword())) {
+            if (!user.getPassword().equals(vo.getOldpassword())) {
                 return new ReturnObject(ReturnNo.CUSTOMER_PASSWORDWRONG);
             }
 
-            user.setPassword(vo.getNewPassword());
+            user.setPassword(vo.getNewpassword());
             this.save(user);
             return new ReturnObject();
+        } catch (Exception e) {
+            log.error("changeUserPassword " + e.getMessage());
+            throw e;
+        }
+    }
+    @Override
+    public ReturnObject isValid(UserVo vo) {
+        try {
+            LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(User::getUserName, vo.getUserName());
+            User user = this.getOne(lambdaQueryWrapper);
+            if (user == null) {
+                return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "该用户未注册");
+            }
+            if (!user.getPassword().equals(vo.getPassword())) {
+                return new ReturnObject(ReturnNo.CUSTOMER_PASSWORDWRONG);
+            }
+            return new ReturnObject(vo.getUserName());
         } catch (Exception e) {
             log.error("changeUserPassword " + e.getMessage());
             throw e;
