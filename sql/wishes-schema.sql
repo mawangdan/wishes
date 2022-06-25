@@ -1,28 +1,7 @@
 DROP TABLE IF EXISTS `wishes_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wishes_user` (
-                                   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                                   `user_name` varchar(128) DEFAULT NULL,
-                                   `password` varchar(255) DEFAULT NULL,
-                                   `credit_point` int(8) DEFAULT NULL,
-                                   `sign` varchar(255) DEFAULT NULL,
-                                   `address` varchar(512) DEFAULT NULL,
-                                   `real_name` varchar(128) DEFAULT NULL,
-                                   `state` tinyint(4) DEFAULT '0',
-                                   `email` varchar(255) DEFAULT NULL,
-                                   `mobile` varchar(255) DEFAULT NULL,
-                                   `prefer_task_type` varchar(255) DEFAULT NULL,
-                                   `student_id` varchar(255) DEFAULT NULL,
-                                   `be_deleted` tinyint(4) DEFAULT '0',
-                                   `creator_id` bigint(20) DEFAULT NULL,
-                                   `creator_name` varchar(128) DEFAULT NULL,
-                                   `modifier_id` bigint(20) DEFAULT NULL,
-                                   `modifier_name` varchar(128) DEFAULT NULL,
-                                   `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                   `gmt_modified` datetime DEFAULT NULL,
-                                   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 DROP TABLE IF EXISTS `wishes_chat_record`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -183,3 +162,26 @@ CREATE TABLE `news` (
                                          `modifier_name` varchar(128) DEFAULT NULL COMMENT '修改用户名',
                                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='新闻表';
+
+CREATE TABLE `wishes_user` (
+                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                               `user_name` varchar(128) DEFAULT NULL,
+                               `password` varchar(255) DEFAULT NULL,
+                               `credit_point` int(8) DEFAULT NULL,
+                               `sign` varchar(255) DEFAULT NULL,
+                               `address` varchar(512) DEFAULT NULL,
+                               `real_name` varchar(128) DEFAULT NULL,
+                               `state` tinyint(4) DEFAULT '0',
+                               `email` varchar(255) DEFAULT NULL,
+                               `mobile` varchar(255) DEFAULT NULL,
+                               `prefer_task_type` varchar(255) DEFAULT NULL,
+                               `student_id` varchar(255) DEFAULT NULL,
+                               `be_deleted` tinyint(4) DEFAULT '0',
+                               `creator_id` bigint(20) DEFAULT NULL,
+                               `creator_name` varchar(128) DEFAULT NULL,
+                               `modifier_id` bigint(20) DEFAULT NULL,
+                               `modifier_name` varchar(128) DEFAULT NULL,
+                               `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                               `gmt_modified` datetime DEFAULT NULL,
+                               PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
