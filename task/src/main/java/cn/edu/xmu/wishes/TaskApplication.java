@@ -5,8 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@SpringBootApplication(scanBasePackages = {"cn.edu.xmu.wishes.core", "cn.edu.xmu.wishes.task", "cn.edu.xmu.wishes.user"})
-@MapperScan({"cn.edu.xmu.wishes.task.mapper", "cn.edu.xmu.wishes.user.mapper"})
+@SpringBootApplication(scanBasePackages = {"cn.edu.xmu.wishes.core", "cn.edu.xmu.wishes.task", "cn.edu.xmu.wishes.user","cn.edu.xmu.wishes.news"})
+@MapperScan({"cn.edu.xmu.wishes.task.mapper", "cn.edu.xmu.wishes.user.mapper","cn.edu.xmu.wishes.news.mapper"})
 @EnableConfigurationProperties
 public class TaskApplication {
     public static void main(String[] args) {

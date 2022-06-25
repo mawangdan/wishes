@@ -146,7 +146,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (!user.getPassword().equals(vo.getOldpassword())) {
                 return new ReturnObject(ReturnNo.CUSTOMER_PASSWORDWRONG);
             }
-
             user.setPassword(vo.getNewpassword());
             this.updateById(user);
             return new ReturnObject();

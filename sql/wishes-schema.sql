@@ -153,3 +153,33 @@ CREATE TABLE `wishes_auth_user_role` (
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `auth_user_role_user_id_role_id_uindex` (`user_id`,`role_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户角色表';
+
+CREATE TABLE `news_connect` (
+                                 `id` bigint NOT NULL AUTO_INCREMENT,
+                                 `news_id` bigint DEFAULT NULL,
+                                 `user_id` bigint DEFAULT NULL,
+                                 `connect_type` varchar(128) DEFAULT NULL,
+                                 `creator_id` bigint DEFAULT NULL COMMENT '创建用户id',
+                                 `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                 `modifier_id` bigint DEFAULT NULL COMMENT '修改用户id',
+                                 `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+                                 `creator_name` varchar(128) DEFAULT NULL COMMENT '创建用户名',
+                                 `modifier_name` varchar(128) DEFAULT NULL COMMENT '修改用户名',
+                                 PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='新闻浏览表,新闻喜欢表,新闻收藏表';
+
+
+CREATE TABLE `news` (
+                                         `id` bigint NOT NULL AUTO_INCREMENT,
+                                         `news_title` varchar(128) DEFAULT NULL,
+                                         `news_type` varchar(128) DEFAULT NULL,
+                                         `author` varchar(128) DEFAULT NULL,
+                                         `content` varchar(2048) DEFAULT NULL,
+                                         `creator_id` bigint DEFAULT NULL COMMENT '创建用户id',
+                                         `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                         `modifier_id` bigint DEFAULT NULL COMMENT '修改用户id',
+                                         `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+                                         `creator_name` varchar(128) DEFAULT NULL COMMENT '创建用户名',
+                                         `modifier_name` varchar(128) DEFAULT NULL COMMENT '修改用户名',
+                                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='新闻表';

@@ -162,6 +162,5 @@ public class UserController {
         return Common.decorateReturnObject(userService.changeUserPassword(vo.getUsername(), vo));
     }
 
-
 }
 
