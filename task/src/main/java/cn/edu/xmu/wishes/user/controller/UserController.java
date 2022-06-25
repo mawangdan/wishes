@@ -74,29 +74,14 @@ public class UserController {
         return new ResponseEntity(ResponseUtil.ok(returnObject.getData()), HttpStatus.CREATED);
     }
 
-    /**已经弃用
-     * 上传注册验证码
-     * @param captcha
-     * @param bindingResult
-     * @return
-     */
-    @PostMapping("/users/captcha")
-    public Object verifyLoginUpCaptcha(BindingResult bindingResult) {
-        Object o= Common.processFieldErrors(bindingResult,httpServletResponse);
-        if(o!=null) {
-            return o;
-        }
-        return Common.decorateReturnObject(null);
-    }
 
     /**
      * 用户登出
      * @return
      */
     @ApiOperation(value = "用户登出")
-    @PostMapping("/logout")
+    @PostMapping("/user/logout")
     public Object logout() {
-        Long userId = UserInfoUtil.getUserId();
         return Common.decorateReturnObject(new ReturnObject());
     }
 
@@ -112,10 +97,9 @@ public class UserController {
             @ApiResponse(code = 0, message = "成功")
     })
     @GetMapping("/self")
-    public Object getCustomerInfo()
+    public Object getCustomerInfo(@RequestHeader(value = "Authorization") String username)
     {
-        Long userId = UserInfoUtil.getUserId();
-        ReturnObject returnObject = userService.getUserInfo(userId);
+        ReturnObject returnObject = new ReturnObject(userService.getUserByName(username));
         return Common.decorateReturnObject(returnObject);
     }
 
@@ -166,7 +150,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 0, message = "成功")
     })
-    @PutMapping("/user/update")
+    @PostMapping("/user/update")
     public Object changePassword(@Validated @RequestBody NewPasswordVo vo,
                                  BindingResult bindingResult)
     {
