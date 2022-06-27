@@ -48,6 +48,15 @@ public class NewsController {
         return Common.decorateReturnObject(new ReturnObject(newsService.listAllNewsByExampleAndPage(exampleNews)));
     }
 
+    @ApiOperation(value = "查找指定类型新闻")
+    @GetMapping("/categorypage/{newstype}")
+    public Object getNewsByTypePage(@PathVariable("newstype") String newstype,@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize
+    ){
+        News exampleNews = News.builder()
+                .newsType(newstype)
+                .build();
+        return Common.decorateReturnObject(new ReturnObject(newsService.listNewsByExampleAndPage(exampleNews,page,pageSize)));
+    }
 
     @ApiOperation(value = "查找用户浏览的新闻")
     @GetMapping("/liulan")
