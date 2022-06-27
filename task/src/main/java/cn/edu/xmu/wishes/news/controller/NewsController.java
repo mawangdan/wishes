@@ -45,7 +45,7 @@ public class NewsController {
         News exampleNews = News.builder()
                 .newsType(newstype)
                 .build();
-        return Common.decorateReturnObject(new ReturnObject(newsService.listAllNewsByExampleAndPage(exampleNews)));
+        return Common.decorateReturnObject(newsService.listAllNewsByExampleAndPage(exampleNews));
     }
 
     @ApiOperation(value = "查找指定类型新闻")
@@ -55,7 +55,7 @@ public class NewsController {
         News exampleNews = News.builder()
                 .newsType(newstype)
                 .build();
-        return Common.decorateReturnObject(new ReturnObject(newsService.listNewsByExampleAndPage(exampleNews,page,pageSize)));
+        return Common.decorateReturnObject(newsService.listNewsByExampleAndPage(exampleNews,page,pageSize));
     }
 
     @ApiOperation(value = "查找用户浏览的新闻")
