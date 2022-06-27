@@ -20,7 +20,9 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -49,7 +51,7 @@ public class UserController {
     @PostMapping("/oauth/token")
     public Object postAccessToken(@RequestBody UserVo vo
     ){
-        return userService.isValid(vo);
+        return Common.decorateReturnObject(userService.isValid(vo));
     }
     /**
      * 用户注册
@@ -71,7 +73,7 @@ public class UserController {
         if(returnObject.getCode() != ReturnNo.OK) {
             return Common.decorateReturnObject(returnObject);
         }
-        return new ResponseEntity(ResponseUtil.ok(returnObject.getData()), HttpStatus.CREATED);
+        return Common.decorateReturnObject(returnObject);
     }
 
 
