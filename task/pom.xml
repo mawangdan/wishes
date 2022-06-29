@@ -63,8 +63,6 @@
         <dependency>
             <groupId>com.chinamobile.ecloud</groupId>
             <artifactId>ecloud-sdk-ocr</artifactId>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/ecloud-sdk-ocr-1.5.3-jar-with-dependencies.jar</systemPath>
             <version>1.0.0</version>
         </dependency>
 
