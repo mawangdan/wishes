@@ -38,6 +38,20 @@ public class NewsController {
         return Common.decorateReturnObject(new ReturnObject(newsService.getNewsById(id)));
     }
 
+    @ApiOperation(value = "查找新闻的浏览，喜欢，收藏次数")
+    @GetMapping("/newsconnect/{news_id}")
+    public Object getNewsconnectByNewsId(@PathVariable("news_id") Integer id
+    ){
+        return Common.decorateReturnObject(newsConnectService.getNewsconnectByNewsId(id));
+    }
+
+    @ApiOperation(value = "查找所有新闻分页")
+    @GetMapping("/newsallpage")
+    public Object getNewsallpageById(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize
+    ){
+        return Common.decorateReturnObject(newsService.getNewsallpageById(page,pageSize));
+    }
+
     @ApiOperation(value = "查找指定类型新闻")
     @GetMapping("/category/{newstype}")
     public Object getNewsByType(@PathVariable("newstype") String newstype
@@ -48,7 +62,7 @@ public class NewsController {
         return Common.decorateReturnObject(newsService.listAllNewsByExampleAndPage(exampleNews));
     }
 
-    @ApiOperation(value = "查找指定类型新闻")
+    @ApiOperation(value = "查找指定类型新闻分页")
     @GetMapping("/categorypage/{newstype}")
     public Object getNewsByTypePage(@PathVariable("newstype") String newstype,@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize
     ){

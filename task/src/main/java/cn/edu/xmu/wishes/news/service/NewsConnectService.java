@@ -5,6 +5,7 @@ import cn.edu.xmu.wishes.news.mapper.NewsConnectMapper;
 import cn.edu.xmu.wishes.news.mapper.NewsMapper;
 import cn.edu.xmu.wishes.news.model.po.News;
 import cn.edu.xmu.wishes.news.model.po.NewsConnect;
+import cn.edu.xmu.wishes.news.model.po.NewsConnectCount;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -72,5 +73,22 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
         LambdaQueryWrapper<NewsConnect> queryWrapper = getQueryWrapperByNewsConnect(exampleNewsConnect);
         List<NewsConnect> news = baseMapper.selectList(queryWrapper);
         return new ReturnObject(news);
+    }
+
+
+    public ReturnObject getNewsconnectByNewsId(Integer id) {
+        LambdaQueryWrapper<NewsConnect> queryWrapper = getQueryWrapperByNewsConnect(NewsConnect.builder().newsId(id.longValue()).build());
+        List<NewsConnect> newsConnects=baseMapper.selectList(queryWrapper);
+        int liuLan=0,xiHuan=0,shouCang=0;
+        for (NewsConnect newsConnect :newsConnects) {
+            if (newsConnect.getConnectType().equals("喜欢")) {
+                xiHuan++;
+            }else if(newsConnect.getConnectType().equals("收藏")){
+                shouCang++;
+            } else if (newsConnect.getConnectType().equals("浏览")) {
+                liuLan++;
+            }
+        }
+        return new ReturnObject(new NewsConnectCount(id,xiHuan,shouCang,liuLan));
     }
 }

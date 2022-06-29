@@ -53,4 +53,13 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
         List<News> news = baseMapper.selectList(queryWrapper);
         return new ReturnObject(news);
     }
+
+    public ReturnObject getNewsallpageById(Integer page, Integer pageSize) {
+        Page<News> taskPage = new Page<>(page, pageSize);
+        LambdaQueryWrapper<News> queryWrapper = new LambdaQueryWrapper<>();
+        Page<News> newsPage = this.baseMapper.selectPage(taskPage, queryWrapper);
+        return new ReturnObject(newsPage);
+    }
+
+
 }
