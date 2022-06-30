@@ -11,10 +11,10 @@
     </parent>
 
     <groupId>cn.edu.xmu</groupId>
-    <artifactId>wishes</artifactId>
+    <artifactId>plack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>wishes</name>
+    <name>plack</name>
     <packaging>pom</packaging>
 
     <properties>
@@ -38,9 +38,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>cn.edu.xmu.wishes</groupId>
+                <groupId>cn.edu.xmu.plack</groupId>
                 <artifactId>core</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>

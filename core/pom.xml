@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>wishes</artifactId>
+        <artifactId>plack</artifactId>
         <groupId>cn.edu.xmu</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>cn.edu.xmu.wishes</groupId>
+    <groupId>cn.edu.xmu.plack</groupId>
     <artifactId>core</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${parent.version}</version>
 
     <dependencies>
         <dependency>
@@ -142,7 +142,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <classifier>exec</classifier>
-                    <mainClass>cn.edu.xmu.wishes.core.CoreApplication</mainClass>
+                    <mainClass>cn.edu.xmu.plack.core.CoreApplication</mainClass>
                 </configuration>
             </plugin>
 

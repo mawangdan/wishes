@@ -1,9 +1,9 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  cn.edu.xmu.mini.core.aop.AuditAspect,\
-  cn.edu.xmu.mini.core.config.CacheConfig,\
-  cn.edu.xmu.mini.core.config.CorsConfig,\
-  cn.edu.xmu.mini.core.config.LoadBalanceConfig,\
-  cn.edu.xmu.mini.core.config.OpenFeignConfig,\
-  cn.edu.xmu.mini.core.config.RedisConfig,\
-  cn.edu.xmu.mini.core.config.SwaggerConfig,\
-  cn.edu.xmu.mini.core.util.storage.config.StorageAutoConfiguration
+  cn.edu.xmu.plack.core.aop.AuditAspect,\
+  cn.edu.xmu.plack.core.config.CacheConfig,\
+  cn.edu.xmu.plack.core.config.CorsConfig,\
+  cn.edu.xmu.plack.core.config.LoadBalanceConfig,\
+  cn.edu.xmu.plack.core.config.OpenFeignConfig,\
+  cn.edu.xmu.plack.core.config.RedisConfig,\
+  cn.edu.xmu.plack.core.config.SwaggerConfig,\
+  cn.edu.xmu.plack.core.util.storage.config.StorageAutoConfiguration
