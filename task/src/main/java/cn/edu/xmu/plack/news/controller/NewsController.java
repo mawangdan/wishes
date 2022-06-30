@@ -43,7 +43,8 @@ public class NewsController {
 
     @ApiOperation(value = "查找所有新闻分页")
     @GetMapping("/newsallpage")
-    public Object getNewsallpageById(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize
+    public Object getNewsallpageById(@RequestParam(defaultValue = "1") Integer page,
+                                     @RequestParam(defaultValue = "10") Integer pageSize
     ){
         return Common.decorateReturnObject(newsService.getNewsallpageById(page,pageSize));
     }
