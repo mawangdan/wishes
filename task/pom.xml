@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.edu.xmu.wishes</groupId>
+    <groupId>cn.edu.xmu.plack</groupId>
     <artifactId>task</artifactId>
     <version>${parent.version}</version>
 
@@ -94,7 +94,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>cn.edu.xmu.wishes.TaskApplication</mainClass>
+                    <mainClass>cn.edu.xmu.plack.PlackApplication</mainClass>
                 </configuration>
             </plugin>
 
