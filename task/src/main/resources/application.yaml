@@ -64,3 +64,13 @@ spring:
 #  configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+wishes:
+  storage:
+    active: webdav
+
+    webdav:
+      url: http://122.9.37.63/webdav/
+      directory: news
+      username: dev
+      password: Wishes12345678
+      replaceStr: /webdav
