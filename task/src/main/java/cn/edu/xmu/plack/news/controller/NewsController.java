@@ -111,4 +111,13 @@ public class NewsController {
         return Common.decorateReturnObject(newsConnectService.shouCang(userId,newsId));
     }
 
+    /**
+     * 获取用户喜欢，浏览，收藏的新闻数量
+     */
+    @ApiOperation("获取用户喜欢，浏览，收藏的新闻数量")
+    @GetMapping("/news/user/summary")
+    public Object getUserNewsSummary(@RequestParam Long userId) {
+        return Common.decorateReturnObject(newsConnectService.getUserNewsSummary(userId));
+    }
+
 }
