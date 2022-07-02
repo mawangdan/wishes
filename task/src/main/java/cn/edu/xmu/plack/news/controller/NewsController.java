@@ -1,13 +1,19 @@
 package cn.edu.xmu.plack.news.controller;
 
 import cn.edu.xmu.plack.core.util.Common;
+import cn.edu.xmu.plack.core.util.ResponseUtil;
 import cn.edu.xmu.plack.core.util.ReturnObject;
+import cn.edu.xmu.plack.news.model.vo.CategoryVo;
 import cn.edu.xmu.plack.news.service.NewsConnectService;
 import cn.edu.xmu.plack.news.model.po.News;
 import cn.edu.xmu.plack.news.service.NewsService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.EnumSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/", produces = "application/json;charset=UTF-8")
@@ -120,4 +126,14 @@ public class NewsController {
         return Common.decorateReturnObject(newsConnectService.getUserNewsSummary(userId));
     }
 
+    /**
+     * 获取所有新闻类型
+     */
+    @ApiOperation("获取所有新闻类型")
+    @GetMapping("/news/category")
+    public Object getAllNewsCategory() {
+        EnumSet<News.NewsType> enumSet = EnumSet.allOf(News.NewsType.class);
+        List<CategoryVo> newsTypeList = enumSet.stream().map(x -> new CategoryVo((long) x.getCode(), x.getDesc())).collect(Collectors.toUnmodifiableList());
+        return ResponseUtil.ok(newsTypeList);
+    }
 }
