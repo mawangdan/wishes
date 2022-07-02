@@ -2,6 +2,7 @@ package cn.edu.xmu.plack.news.service;
 
 import cn.edu.xmu.plack.core.util.ReturnObject;
 import cn.edu.xmu.plack.news.mapper.NewsMapper;
+import cn.edu.xmu.plack.news.model.dto.NewsDTO;
 import cn.edu.xmu.plack.news.model.po.News;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -27,8 +28,8 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
     private LambdaQueryWrapper<News> getQueryWrapperByNews(News exampleTask) {
         LambdaQueryWrapper<News> queryWrapper = new LambdaQueryWrapper<>();
         Optional.ofNullable(exampleTask.getAuthor()).ifPresent(x -> queryWrapper.eq(News::getAuthor, x));
-        Optional.ofNullable(exampleTask.getContent()).ifPresent(x -> queryWrapper.eq(News::getContent, x));
-        Optional.ofNullable(exampleTask.getNewsTitle()).ifPresent(x -> queryWrapper.eq(News::getNewsTitle, x));
+        Optional.ofNullable(exampleTask.getContent()).ifPresent(x -> queryWrapper.like(News::getContent, String.format("%%%s%%", x)));
+        Optional.ofNullable(exampleTask.getNewsTitle()).ifPresent(x -> queryWrapper.like(News::getNewsTitle, String.format("%%%s%%", x)));
         Optional.ofNullable(exampleTask.getNewsType()).ifPresent(x -> queryWrapper.eq(News::getNewsType, x));
 
         return queryWrapper;
@@ -40,7 +41,7 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
         Page<News> newsPage = this.baseMapper.selectPage(taskPage, queryWrapper);
         return new ReturnObject(newsPage);
     }
-    public ReturnObject listAllNewsByExampleAndPage(News exampleNews){
+    public ReturnObject listNewsByExample(News exampleNews){
         LambdaQueryWrapper<News> queryWrapper = getQueryWrapperByNews(exampleNews);
         List<News> news = baseMapper.selectList(queryWrapper);
         return new ReturnObject(news);
@@ -53,4 +54,13 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
         return new ReturnObject(newsPage);
     }
 
+    public ReturnObject listNewsPage(NewsDTO newsDTO, Integer page, Integer pageSize) {
+        News newsExample = News.builder()
+                .newsTitle(newsDTO.getTitle())
+                .author(newsDTO.getAuthor())
+                .newsType(newsDTO.getType())
+                .content(newsDTO.getContent())
+                .build();
+        return listNewsByExampleAndPage(newsExample, page, pageSize);
+    }
 }

@@ -3,11 +3,13 @@ package cn.edu.xmu.plack.news.controller;
 import cn.edu.xmu.plack.core.util.Common;
 import cn.edu.xmu.plack.core.util.ResponseUtil;
 import cn.edu.xmu.plack.core.util.ReturnObject;
+import cn.edu.xmu.plack.news.model.dto.NewsDTO;
 import cn.edu.xmu.plack.news.model.vo.CategoryVo;
 import cn.edu.xmu.plack.news.service.NewsConnectService;
 import cn.edu.xmu.plack.news.model.po.News;
 import cn.edu.xmu.plack.news.service.NewsService;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/", produces = "application/json;charset=UTF-8")
+@Slf4j
 public class NewsController {
     @Autowired
     private NewsService newsService;
@@ -62,7 +65,7 @@ public class NewsController {
         News exampleNews = News.builder()
                 .newsType(newstype)
                 .build();
-        return Common.decorateReturnObject(newsService.listAllNewsByExampleAndPage(exampleNews));
+        return Common.decorateReturnObject(newsService.listNewsByExample(exampleNews));
     }
 
     @ApiOperation(value = "查找指定类型新闻分页")
@@ -135,5 +138,15 @@ public class NewsController {
         EnumSet<News.NewsType> enumSet = EnumSet.allOf(News.NewsType.class);
         List<CategoryVo> newsTypeList = enumSet.stream().map(x -> new CategoryVo((long) x.getCode(), x.getDesc())).collect(Collectors.toUnmodifiableList());
         return ResponseUtil.ok(newsTypeList);
+    }
+
+    @ApiOperation(value = "根据条件查找分页的新闻")
+    @GetMapping("/news")
+    public Object listNewsPage(NewsDTO newsDTO,
+                               @RequestParam(defaultValue = "1") Integer page,
+                               @RequestParam(defaultValue = "10") Integer pageSize
+    ){
+        log.info("newsDTO{}: page:{}, pageSize:{}", newsDTO, page, pageSize);
+        return Common.decorateReturnObject(newsService.listNewsPage(newsDTO, page,pageSize));
     }
 }

@@ -60,3 +60,7 @@ spring:
     timeout: 5000
     host: 120.46.149.254
 
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
