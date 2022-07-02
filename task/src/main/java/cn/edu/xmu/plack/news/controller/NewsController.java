@@ -4,13 +4,15 @@ import cn.edu.xmu.plack.core.util.Common;
 import cn.edu.xmu.plack.core.util.ResponseUtil;
 import cn.edu.xmu.plack.core.util.ReturnObject;
 import cn.edu.xmu.plack.news.model.dto.NewsDTO;
-import cn.edu.xmu.plack.news.model.vo.CategoryVo;
+import cn.edu.xmu.plack.news.model.vo.CategoryRetVo;
+import cn.edu.xmu.plack.news.model.vo.NewsVo;
 import cn.edu.xmu.plack.news.service.NewsConnectService;
 import cn.edu.xmu.plack.news.model.po.News;
 import cn.edu.xmu.plack.news.service.NewsService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.EnumSet;
@@ -136,7 +138,7 @@ public class NewsController {
     @GetMapping("/news/category")
     public Object getAllNewsCategory() {
         EnumSet<News.NewsType> enumSet = EnumSet.allOf(News.NewsType.class);
-        List<CategoryVo> newsTypeList = enumSet.stream().map(x -> new CategoryVo(x.name(), x.getDesc())).collect(Collectors.toUnmodifiableList());
+        List<CategoryRetVo> newsTypeList = enumSet.stream().map(x -> new CategoryRetVo(x.name(), x.getDesc())).collect(Collectors.toUnmodifiableList());
         return ResponseUtil.ok(newsTypeList);
     }
 
@@ -148,5 +150,13 @@ public class NewsController {
     ){
         log.info("newsDTO{}: page:{}, pageSize:{}", newsDTO, page, pageSize);
         return Common.decorateReturnObject(newsService.listNewsPage(newsDTO, page,pageSize));
+    }
+
+    @ApiOperation(value = "新增新闻")
+    @PostMapping("/news")
+    public Object addNews(@Validated @RequestBody NewsVo newsVo
+    ){
+        log.info("addNews: newsVo:{}", newsVo);
+        return Common.decorateReturnObject(newsService.addNews(newsVo));
     }
 }

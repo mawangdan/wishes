@@ -1,9 +1,11 @@
 package cn.edu.xmu.plack.news.service;
 
+import cn.edu.xmu.plack.core.util.Common;
 import cn.edu.xmu.plack.core.util.ReturnObject;
 import cn.edu.xmu.plack.news.mapper.NewsMapper;
 import cn.edu.xmu.plack.news.model.dto.NewsDTO;
 import cn.edu.xmu.plack.news.model.po.News;
+import cn.edu.xmu.plack.news.model.vo.NewsVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -67,5 +69,14 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
                 .content(newsDTO.getContent())
                 .build();
         return listNewsByExampleAndPage(newsExample, page, pageSize);
+    }
+
+    public ReturnObject addNews(NewsVo newsVo) {
+        News news = Common.cloneVo(newsVo, News.class);
+        boolean isSave = this.save(news);
+        if (!isSave) {
+            return ReturnObject.INTERNAL_SERVER_ERR_RET;
+        }
+        return ReturnObject.OK_RET;
     }
 }
