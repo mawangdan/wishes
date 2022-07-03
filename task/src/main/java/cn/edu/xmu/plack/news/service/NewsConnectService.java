@@ -1,5 +1,6 @@
 package cn.edu.xmu.plack.news.service;
 
+import cn.edu.xmu.plack.core.util.ReturnNo;
 import cn.edu.xmu.plack.core.util.ReturnObject;
 import cn.edu.xmu.plack.news.mapper.NewsConnectMapper;
 import cn.edu.xmu.plack.news.model.po.News;
@@ -7,9 +8,12 @@ import cn.edu.xmu.plack.news.model.po.NewsConnect;
 import cn.edu.xmu.plack.news.model.po.NewsConnectCount;
 import cn.edu.xmu.plack.news.model.vo.UserNewsSummary;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +22,8 @@ import java.util.Optional;
 
 @Service("newsConnectService")
 public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConnect> {
+    @Autowired
+    private NewsService newsService;
 
     private LambdaQueryWrapper<NewsConnect> getQueryWrapperByNewsConnect(NewsConnect exampleTask) {
         LambdaQueryWrapper<NewsConnect> queryWrapper = new LambdaQueryWrapper<>();
@@ -40,12 +46,19 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
         return new ReturnObject<>(news);
     }
 
+    @Transactional
     public ReturnObject liulan(Long userId,Long newsId){
         NewsConnect newsConnect=NewsConnect.builder()
                 .connectType("浏览")
                 .newsId(newsId)
                 .userId(userId).build();
         baseMapper.insert(newsConnect);
+
+        LambdaUpdateWrapper<News> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper
+                .eq(News::getId, newsId)
+                .setSql("browse_count=browse_count+1");
+        newsService.update(lambdaUpdateWrapper);
         return new ReturnObject();
     }
     public ReturnObject shouCang(Long userId,Long newsId){
@@ -54,9 +67,15 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
                 .newsId(newsId)
                 .userId(userId).build();
         if(baseMapper.selectOne(getQueryWrapperByNewsConnect(newsConnect))!=null){
-            return new ReturnObject("无法重复收藏");
+            return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "无法重复收藏");
         }
         baseMapper.insert(newsConnect);
+
+        LambdaUpdateWrapper<News> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper
+                .eq(News::getId, newsId)
+                .setSql("collect_count=collect_count+1");
+        newsService.update(lambdaUpdateWrapper);
         return new ReturnObject();
     }
     public ReturnObject xiHuan(Long userId,Long newsId){
@@ -68,6 +87,12 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
             return new ReturnObject("无法重复喜欢");
         }
         baseMapper.insert(newsConnect);
+
+        LambdaUpdateWrapper<News> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper
+                .eq(News::getId, newsId)
+                .setSql("favor_count=favor_count+1");
+        newsService.update(lambdaUpdateWrapper);
         return new ReturnObject();
     }
 
@@ -78,20 +103,12 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
         return returnObject;
     }
 
-    public ReturnObject getNewsconnectByNewsId(Integer id) {
-        LambdaQueryWrapper<NewsConnect> queryWrapper = getQueryWrapperByNewsConnect(NewsConnect.builder().newsId(id.longValue()).build());
-        List<NewsConnect> newsConnects=baseMapper.selectList(queryWrapper);
-        int liuLan=0,xiHuan=0,shouCang=0;
-        for (NewsConnect newsConnect :newsConnects) {
-            if (newsConnect.getConnectType().equals("喜欢")) {
-                xiHuan++;
-            }else if(newsConnect.getConnectType().equals("收藏")){
-                shouCang++;
-            } else if (newsConnect.getConnectType().equals("浏览")) {
-                liuLan++;
-            }
+    public ReturnObject getNewsConnectByNewsId(Long id) {
+        News news = newsService.getById(id);
+        if (news == null) {
+            return ReturnObject.RESOURCE_ID_NOTEXIST_RET;
         }
-        return new ReturnObject(new NewsConnectCount(id,xiHuan,shouCang,liuLan));
+        return new ReturnObject(new NewsConnectCount(id, news.getFavorCount(), news.getCollectCount(), news.getBrowseCount()));
     }
 
     public ReturnObject getUserNewsSummary(Long userId) {

@@ -20,6 +20,7 @@ import java.util.Optional;
 public class NewsService extends ServiceImpl<NewsMapper, News>{
     @Autowired
     public NewsMapper newsMapper;
+
     public News getNewsById(Integer id){
         return getById(id);
     }

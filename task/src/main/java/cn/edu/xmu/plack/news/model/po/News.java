@@ -14,10 +14,14 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("news")
 public class News extends BaseEntity {
-    public String newsTitle;
-    public String newsType;
-    public String author;
-    public String content;
+    private String newsTitle;
+    private String newsType;
+    private String author;
+    private String content;
+    private Long favorCount;
+    private Long collectCount;
+    private Long browseCount;
+
 
     public enum NewsType {
         Business(0, "商业"),

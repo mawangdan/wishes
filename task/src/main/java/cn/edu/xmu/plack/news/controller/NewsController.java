@@ -47,9 +47,9 @@ public class NewsController {
 
     @ApiOperation(value = "查找新闻的浏览，喜欢，收藏次数")
     @GetMapping("/newsconnect/{news_id}")
-    public Object getNewsconnectByNewsId(@PathVariable("news_id") Integer id
+    public Object getNewsconnectByNewsId(@PathVariable("news_id") Long id
     ){
-        return Common.decorateReturnObject(newsConnectService.getNewsconnectByNewsId(id));
+        return Common.decorateReturnObject(newsConnectService.getNewsConnectByNewsId(id));
     }
 
     @ApiOperation(value = "查找所有新闻分页")
@@ -103,21 +103,21 @@ public class NewsController {
 
     @ApiOperation(value = "用户浏览新闻")
     @PostMapping("/liulan")
-    public Object addNewsByLiuLan(@RequestParam(required = true) Long userId,@RequestParam(required = true) Long newsId
+    public Object addNewsByLiuLan(@RequestParam Long userId, @RequestParam Long newsId
     ){
         return Common.decorateReturnObject(newsConnectService.liulan(userId,newsId));
     }
 
     @ApiOperation(value = "用户喜欢新闻")
     @PostMapping("/xihuan")
-    public Object addNewsByXiHuan(@RequestParam(required = true) Long userId,@RequestParam(required = true) Long newsId
+    public Object addNewsByXiHuan(@RequestParam Long userId, @RequestParam Long newsId
     ){
         return Common.decorateReturnObject(newsConnectService.xiHuan(userId,newsId));
     }
 
     @ApiOperation(value = "用户收藏新闻")
     @PostMapping("/shoucang")
-    public Object addNewsByShouCang(@RequestParam(required = true) Long userId,@RequestParam(required = true) Long newsId
+    public Object addNewsByShouCang(@RequestParam Long userId, @RequestParam Long newsId
     ){
         return Common.decorateReturnObject(newsConnectService.shouCang(userId,newsId));
     }

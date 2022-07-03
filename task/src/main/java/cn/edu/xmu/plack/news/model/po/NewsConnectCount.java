@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewsConnectCount {
-    Integer id;
-    Integer xiHuanCnt;
-    Integer shouCangCnt;
-    Integer liuLanCnt;
+    Long id;
+    Long xiHuanCnt;
+    Long shouCangCnt;
+    Long liuLanCnt;
 }
