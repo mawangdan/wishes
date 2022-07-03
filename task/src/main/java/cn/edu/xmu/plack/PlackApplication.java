@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-//@MapperScan({"cn.edu.xmu.plack.task.mapper", "cn.edu.xmu.plack.user.mapper","cn.edu.xmu.plack.news.mapper"})
 @MapperScan({"cn.edu.xmu.plack.*.mapper"})
 @EnableConfigurationProperties
 public class PlackApplication {

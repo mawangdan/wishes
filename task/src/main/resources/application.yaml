@@ -18,7 +18,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-request-size: 10MB
+      max-request-size: 80MB
+      max-file-size: 80MB
   #  cloud:
   #    nacos:
   #      discovery:

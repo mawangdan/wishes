@@ -7,13 +7,17 @@ import cn.edu.xmu.plack.news.model.dto.NewsDTO;
 import cn.edu.xmu.plack.news.model.po.News;
 import cn.edu.xmu.plack.news.model.vo.NewsVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service("newsService")
@@ -79,5 +83,30 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
             return ReturnObject.INTERNAL_SERVER_ERR_RET;
         }
         return ReturnObject.OK_RET;
+    }
+
+    public ReturnObject<Long> getNewsCount(LocalDateTime beginDate, LocalDateTime endDate) {
+        LambdaQueryWrapper<News> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        Optional.ofNullable(beginDate).ifPresent(x -> lambdaQueryWrapper.ge(News::getGmtCreate, x));
+        Optional.ofNullable(endDate).ifPresent(x -> lambdaQueryWrapper.le(News::getGmtCreate, x));
+        return new ReturnObject<>(count(lambdaQueryWrapper));
+    }
+
+    public ReturnObject getNewsTypeCount(LocalDateTime beginDate, LocalDateTime endDate) {
+        QueryWrapper<News> lambdaQueryWrapper = new QueryWrapper<>();
+        lambdaQueryWrapper.select("news_type as newsType, count(*) as count");
+        Optional.ofNullable(beginDate).ifPresent(x -> lambdaQueryWrapper.ge("gmt_create", x));
+        Optional.ofNullable(endDate).ifPresent(x -> lambdaQueryWrapper.le("gmt_create", x));
+        lambdaQueryWrapper.groupBy("news_type");
+        List<Map<String, Object>> maps = this.listMaps(lambdaQueryWrapper);
+        return new ReturnObject(maps);
+    }
+
+    public ReturnObject getNewsAddition(Integer n) {
+        QueryWrapper<News> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("CONVERT(gmt_create,date) as date, COUNT(1) as count");
+        queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
+        queryWrapper.groupBy("date");
+        return new ReturnObject(this.listMaps(queryWrapper));
     }
 }
