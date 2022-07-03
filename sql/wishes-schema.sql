@@ -2,67 +2,6 @@ DROP TABLE IF EXISTS `wishes_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 
-
-DROP TABLE IF EXISTS `wishes_chat_record`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wishes_chat_record` (
-                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                               `sender_id` bigint(20) DEFAULT NULL,
-                               `receiver_id` bigint(20) DEFAULT NULL,
-                               `type` tinyint(4) DEFAULT NULL,
-                               `content` int(8) DEFAULT NULL,
-                               `be_deleted` tinyint(4) DEFAULT '0',
-                               `creator_id` bigint(20) DEFAULT NULL,
-                               `creator_name` varchar(128) DEFAULT NULL,
-                               `modifier_id` bigint(20) DEFAULT NULL,
-                               `modifier_name` varchar(128) DEFAULT NULL,
-                               `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                               `gmt_modified` datetime DEFAULT NULL,
-                               PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `wishes_task`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wishes_task` (
-                                      `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                                      `initiator_id` bigint(20) DEFAULT NULL,
-                                      `receiver_id` bigint(20) DEFAULT NULL,
-                                      `type_id` bigint(20) DEFAULT NULL,
-                                      `title` varchar(128) DEFAULT NULL,
-                                      `description` varchar(1022) DEFAULT NULL,
-                                      `location` varchar(128) DEFAULT NULL,
-                                      `image_url` varchar(255) DEFAULT NULL,
-                                      `price` varchar(128) DEFAULT NULL,
-                                      `state` tinyint(4) DEFAULT '0',
-                                      `be_deleted` tinyint(4) DEFAULT '0',
-                                      `creator_id` bigint(20) DEFAULT NULL,
-                                      `creator_name` varchar(128) DEFAULT NULL,
-                                      `modifier_id` bigint(20) DEFAULT NULL,
-                                      `modifier_name` varchar(128) DEFAULT NULL,
-                                      `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                      `gmt_modified` datetime DEFAULT NULL,
-                                      PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `wishes_task_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wishes_task_type` (
-                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                               `name` varchar(128) DEFAULT NULL,
-                               `state` tinyint(4) DEFAULT '0',
-                               `be_deleted` tinyint(4) DEFAULT '0',
-                               `creator_id` bigint(20) DEFAULT NULL,
-                               `creator_name` varchar(128) DEFAULT NULL,
-                               `modifier_id` bigint(20) DEFAULT NULL,
-                               `modifier_name` varchar(128) DEFAULT NULL,
-                               `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                               `gmt_modified` datetime DEFAULT NULL,
-                               PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 DROP TABLE IF EXISTS `wishes_auth_privilege`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -176,6 +115,21 @@ CREATE TABLE `wishes_user` (
                                `mobile` varchar(255) DEFAULT NULL,
                                `prefer_task_type` varchar(255) DEFAULT NULL,
                                `student_id` varchar(255) DEFAULT NULL,
+                               `be_deleted` tinyint(4) DEFAULT '0',
+                               `creator_id` bigint(20) DEFAULT NULL,
+                               `creator_name` varchar(128) DEFAULT NULL,
+                               `modifier_id` bigint(20) DEFAULT NULL,
+                               `modifier_name` varchar(128) DEFAULT NULL,
+                               `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                               `gmt_modified` datetime DEFAULT NULL,
+                               PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `plack_admin` (
+                               `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                               `user_name` varchar(128) DEFAULT NULL,
+                               `password` varchar(255) DEFAULT NULL,
+                               `state` tinyint(4) DEFAULT '0',
                                `be_deleted` tinyint(4) DEFAULT '0',
                                `creator_id` bigint(20) DEFAULT NULL,
                                `creator_name` varchar(128) DEFAULT NULL,
