@@ -78,4 +78,27 @@ public class NewsStatisticsController {
     ) {
         return Common.decorateReturnObject(newsConnectService.getUserSummary(n));
     }
+
+    /**
+     * 获取过去n天内所有用户所浏览的类别比例
+     * @param n
+     * @return
+     */
+    @GetMapping("/userSummary/proportion")
+    public Object getUserVisitProportion(@RequestParam(value = "type", defaultValue = "浏览") String type,
+                                         @RequestParam(defaultValue = "7") Integer n
+    ) {
+        return Common.decorateReturnObject(newsConnectService.getUserVisitProportion(type, n));
+    }
+
+    /**
+     * 获取过去n天内所有用户行为总计数
+     * @param n
+     * @return
+     */
+    @GetMapping("/userSummary/num")
+    public Object getUserVisitNum(@RequestParam(defaultValue = "7") Integer n
+    ) {
+        return Common.decorateReturnObject(newsConnectService.getUserVisitNum(n));
+    }
 }

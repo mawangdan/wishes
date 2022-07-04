@@ -1,5 +1,6 @@
 package cn.edu.xmu.plack.news.controller;
 
+import cn.edu.xmu.plack.core.aop.Audit;
 import cn.edu.xmu.plack.core.util.Common;
 import cn.edu.xmu.plack.core.util.ResponseUtil;
 import cn.edu.xmu.plack.core.util.ReturnObject;
@@ -40,7 +41,7 @@ public class NewsController {
 
     @ApiOperation(value = "查找新闻")
     @GetMapping("/news/{news_id}")
-    public Object getNewsById(@PathVariable("news_id") Integer id
+    public Object getNewsById(@PathVariable("news_id") Long id
     ){
         return Common.decorateReturnObject(new ReturnObject(newsService.getNewsById(id)));
     }
@@ -154,6 +155,7 @@ public class NewsController {
 
     @ApiOperation(value = "新增新闻")
     @PostMapping("/news")
+    @Audit
     public Object addNews(@Validated @RequestBody NewsVo newsVo
     ){
         log.debug("addNews: newsVo:{}", newsVo);
@@ -162,9 +164,19 @@ public class NewsController {
 
     @ApiOperation(value = "修改新闻")
     @PutMapping("/news/{id}")
+    @Audit
     public Object updateNews(@PathVariable("id") Long newsId, @Validated @RequestBody NewsVo newsVo
     ){
         log.debug("updateNews: newsId: {}, newsVo:{}", newsId, newsVo);
         return Common.decorateReturnObject(newsService.updateNews(newsId, newsVo));
+    }
+
+    @ApiOperation(value = "删除新闻")
+    @DeleteMapping("/news/{id}")
+    @Audit
+    public Object deleteNews(@PathVariable("id") Long newsId
+    ){
+        log.debug("deleteNews: newsId: {}", newsId);
+        return Common.decorateReturnObject(newsService.deleteNews(newsId));
     }
 }

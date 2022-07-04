@@ -16,11 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("newsConnectService")
 public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConnect> {
@@ -135,6 +134,33 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
         queryWrapper.select("CONVERT(gmt_create,date) as date, connect_type as connectType, COUNT(1) as count");
         queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
         queryWrapper.groupBy("date, connect_type");
+        List<Map<String, Object>> maps = this.listMaps(queryWrapper);
+        return new ReturnObject(maps);
+    }
+
+    public ReturnObject getUserVisitProportion(String type, Integer n) {
+        QueryWrapper<NewsConnect> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("news_id as newsId, COUNT(1) as count");
+        queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
+        queryWrapper.eq("connect_type", type);
+        queryWrapper.groupBy("news_id");
+        List<Map<String, Object>> maps = this.listMaps(queryWrapper);
+        Map<String, Long> visitMap = new HashMap<>();
+        maps.stream().forEach(x -> {
+            Long newsId = (Long) x.get("newsId");
+            News news = newsService.getNewsById(newsId);
+            String newsType = news.getNewsType();
+            visitMap.put(newsType, visitMap.getOrDefault(newsType, 0L) + 1);
+        });
+        List<Map<String, ? extends Serializable>> visitList = visitMap.entrySet().stream().map(entry -> Map.of("name", entry.getKey(), "count", entry.getValue())).collect(Collectors.toList());
+        return new ReturnObject(visitList);
+    }
+
+    public ReturnObject getUserVisitNum(Integer n) {
+        QueryWrapper<NewsConnect> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("connect_type as connectType, COUNT(1) as count");
+        queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
+        queryWrapper.groupBy("connect_type");
         List<Map<String, Object>> maps = this.listMaps(queryWrapper);
         return new ReturnObject(maps);
     }

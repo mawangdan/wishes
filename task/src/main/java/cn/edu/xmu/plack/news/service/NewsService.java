@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service("newsService")
+@Slf4j
 public class NewsService extends ServiceImpl<NewsMapper, News>{
     @Autowired
     public NewsMapper newsMapper;
@@ -29,7 +31,7 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
     @Autowired
     private NewsConnectService newsConnectService;
 
-    public News getNewsById(Integer id){
+    public News getNewsById(Long id){
         return getById(id);
     }
 
@@ -109,6 +111,7 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
     }
 
     public ReturnObject getNewsTypeCount(LocalDateTime beginDate, LocalDateTime endDate) {
+        log.info("getNewsTypeCount beginDate:{}, endDate:{}", beginDate, endDate);
         QueryWrapper<News> lambdaQueryWrapper = new QueryWrapper<>();
         lambdaQueryWrapper.select("news_type as newsType, count(*) as count");
         Optional.ofNullable(beginDate).ifPresent(x -> lambdaQueryWrapper.ge("gmt_create", x));
@@ -119,10 +122,16 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
     }
 
     public ReturnObject getNewsAddition(Integer n) {
+        log.info("getNewsAddition now Time: {}", LocalDate.now());
         QueryWrapper<News> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("CONVERT(gmt_create,date) as date, COUNT(1) as count");
         queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
         queryWrapper.groupBy("date");
         return new ReturnObject(this.listMaps(queryWrapper));
+    }
+
+    public ReturnObject deleteNews(Long newsId) {
+        this.removeById(newsId);
+        return ReturnObject.OK_RET;
     }
 }
