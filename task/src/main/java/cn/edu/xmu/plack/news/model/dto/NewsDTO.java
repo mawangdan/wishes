@@ -8,4 +8,7 @@ public class NewsDTO {
     String author;
     String type;
     String content;
+    String browseOrder;
+    String favorOrder;
+    String collectOrder;
 }

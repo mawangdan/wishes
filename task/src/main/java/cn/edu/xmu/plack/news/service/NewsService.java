@@ -59,6 +59,12 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
         Page<News> newsPage = this.baseMapper.selectPage(taskPage, queryWrapper);
         return new ReturnObject(newsPage);
     }
+    public ReturnObject listNewsByExampleAndPage(LambdaQueryWrapper<News> queryWrapper, Integer page, Integer pageSize) {
+        // get data
+        Page<News> taskPage = new Page<>(page, pageSize);
+        Page<News> newsPage = this.baseMapper.selectPage(taskPage, queryWrapper);
+        return new ReturnObject(newsPage);
+    }
     public ReturnObject listNewsByExample(News exampleNews){
         LambdaQueryWrapper<News> queryWrapper = getQueryWrapperByNews(exampleNews);
         List<News> news = baseMapper.selectList(queryWrapper);
@@ -72,6 +78,8 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
         return new ReturnObject(newsPage);
     }
 
+    private final static String ASC_SIGN = "asc";
+    private final static String DESC_SIGN = "desc";
     public ReturnObject listNewsPage(NewsDTO newsDTO, Integer page, Integer pageSize) {
         News newsExample = News.builder()
                 .newsTitle(newsDTO.getTitle())
@@ -79,7 +87,23 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
                 .newsType(newsDTO.getType())
                 .content(newsDTO.getContent())
                 .build();
-        return listNewsByExampleAndPage(newsExample, page, pageSize);
+        LambdaQueryWrapper<News> queryWrapperByNews = getQueryWrapperByNews(newsExample);
+        if (ASC_SIGN.equals(newsDTO.getBrowseOrder())) {
+            queryWrapperByNews.orderByAsc(News::getBrowseCount);
+        } else if (DESC_SIGN.equals(newsDTO.getBrowseOrder())) {
+            queryWrapperByNews.orderByDesc(News::getBrowseCount);
+        }
+        if (ASC_SIGN.equals(newsDTO.getFavorOrder())) {
+            queryWrapperByNews.orderByAsc(News::getFavorCount);
+        } else if (DESC_SIGN.equals(newsDTO.getFavorOrder())) {
+            queryWrapperByNews.orderByDesc(News::getFavorCount);
+        }
+        if (ASC_SIGN.equals(newsDTO.getCollectOrder())) {
+            queryWrapperByNews.orderByAsc(News::getCollectCount);
+        } else if (DESC_SIGN.equals(newsDTO.getCollectOrder())) {
+            queryWrapperByNews.orderByDesc(News::getCollectCount);
+        }
+        return listNewsByExampleAndPage(queryWrapperByNews, page, pageSize);
     }
 
     @Transactional(rollbackFor = Exception.class)
