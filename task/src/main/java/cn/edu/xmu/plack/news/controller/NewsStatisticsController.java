@@ -3,6 +3,7 @@ package cn.edu.xmu.plack.news.controller;
 import cn.edu.xmu.plack.core.constant.Constants;
 import cn.edu.xmu.plack.core.util.Common;
 import cn.edu.xmu.plack.core.util.ReturnObject;
+import cn.edu.xmu.plack.news.service.NewsConnectService;
 import cn.edu.xmu.plack.news.service.NewsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ import java.time.LocalDateTime;
 public class NewsStatisticsController {
     @Autowired
     private NewsService newsService;
+
+    @Autowired
+    private NewsConnectService newsConnectService;
 
     /**
      * 统计beginDate到endDate内的发布的总新闻数
@@ -62,5 +66,16 @@ public class NewsStatisticsController {
     public Object getNewsAddition(@RequestParam(defaultValue = "7") Integer n
     ) {
         return Common.decorateReturnObject(newsService.getNewsAddition(n));
+    }
+
+    /**
+     * 获取过去n天内所有用户的行为统计
+     * @param n
+     * @return
+     */
+    @GetMapping("/userSummary")
+    public Object getUserSummary(@RequestParam(defaultValue = "7") Integer n
+    ) {
+        return Common.decorateReturnObject(newsConnectService.getUserSummary(n));
     }
 }

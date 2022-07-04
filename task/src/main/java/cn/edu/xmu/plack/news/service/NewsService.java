@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -24,6 +25,9 @@ import java.util.Optional;
 public class NewsService extends ServiceImpl<NewsMapper, News>{
     @Autowired
     public NewsMapper newsMapper;
+
+    @Autowired
+    private NewsConnectService newsConnectService;
 
     public News getNewsById(Integer id){
         return getById(id);
@@ -76,10 +80,22 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
         return listNewsByExampleAndPage(newsExample, page, pageSize);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public ReturnObject addNews(NewsVo newsVo) {
         News news = Common.cloneVo(newsVo, News.class);
         boolean isSave = this.save(news);
         if (!isSave) {
+            return ReturnObject.INTERNAL_SERVER_ERR_RET;
+        }
+        return ReturnObject.OK_RET;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ReturnObject updateNews(Long newsId, NewsVo newsVo) {
+        News news = Common.cloneVo(newsVo, News.class);
+        news.setId(newsId);
+        boolean isUpdate = this.updateById(news);
+        if (!isUpdate) {
             return ReturnObject.INTERNAL_SERVER_ERR_RET;
         }
         return ReturnObject.OK_RET;

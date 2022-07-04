@@ -156,7 +156,15 @@ public class NewsController {
     @PostMapping("/news")
     public Object addNews(@Validated @RequestBody NewsVo newsVo
     ){
-        log.info("addNews: newsVo:{}", newsVo);
+        log.debug("addNews: newsVo:{}", newsVo);
         return Common.decorateReturnObject(newsService.addNews(newsVo));
+    }
+
+    @ApiOperation(value = "修改新闻")
+    @PutMapping("/news/{id}")
+    public Object updateNews(@PathVariable("id") Long newsId, @Validated @RequestBody NewsVo newsVo
+    ){
+        log.debug("updateNews: newsId: {}, newsVo:{}", newsId, newsVo);
+        return Common.decorateReturnObject(newsService.updateNews(newsId, newsVo));
     }
 }

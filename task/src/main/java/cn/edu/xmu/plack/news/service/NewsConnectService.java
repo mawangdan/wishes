@@ -8,6 +8,7 @@ import cn.edu.xmu.plack.news.model.po.NewsConnect;
 import cn.edu.xmu.plack.news.model.po.NewsConnectCount;
 import cn.edu.xmu.plack.news.model.vo.UserNewsSummary;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +119,6 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
                 .build();
         ReturnObject<List<NewsConnect>> returnObject = listNewsConnectByExample(newsConnectExample);
         List<NewsConnect> newsConnectList = returnObject.getData();
-        int favorCount, collectCount, browseCount;
         Map<String, Integer> summaryMap = new HashMap<>();
         summaryMap.put("喜欢", 0);
         summaryMap.put("浏览", 0);
@@ -126,5 +127,15 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
             summaryMap.put(x.getConnectType(), summaryMap.getOrDefault(x.getConnectType(), 0) + 1);
         });
         return new ReturnObject(new UserNewsSummary(summaryMap.get("喜欢"), summaryMap.get("收藏"), summaryMap.get("浏览")));
+    }
+
+
+    public ReturnObject getUserSummary(Integer n) {
+        QueryWrapper<NewsConnect> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("CONVERT(gmt_create,date) as date, connect_type as connectType, COUNT(1) as count");
+        queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
+        queryWrapper.groupBy("date, connect_type");
+        List<Map<String, Object>> maps = this.listMaps(queryWrapper);
+        return new ReturnObject(maps);
     }
 }
