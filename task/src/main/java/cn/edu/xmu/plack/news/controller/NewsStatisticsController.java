@@ -56,13 +56,24 @@ public class NewsStatisticsController {
         }
         return Common.decorateReturnObject(newsService.getNewsTypeCount(beginDate, endDate));
     }
+//
+//    /**
+//     * 返回过去n天内每天发表的新闻数,包括今天
+//     * @param n
+//     * @return
+//     */
+//    @GetMapping("/count/day")
+//    public Object getNewsCountByDay(@RequestParam(defaultValue = "7") Integer n
+//    ) {
+//        return Common.decorateReturnObject(newsService.getNewsCountByDay(n));
+//    }
 
     /**
      * 返回过去n天内每天发表的新闻数,包括今天
      * @param n
      * @return
      */
-    @GetMapping("/count/day")
+    @GetMapping("/count/addition/day")
     public Object getNewsAddition(@RequestParam(defaultValue = "7") Integer n
     ) {
         return Common.decorateReturnObject(newsService.getNewsAddition(n));
@@ -89,6 +100,17 @@ public class NewsStatisticsController {
                                          @RequestParam(defaultValue = "7") Integer n
     ) {
         return Common.decorateReturnObject(newsConnectService.getUserVisitProportion(type, n));
+    }
+
+    /**
+     * 获取过去n天内所有用户对每个新闻类别的行为统计
+     * @param n
+     * @return
+     */
+    @GetMapping("/userSummary/newsType/proportion")
+    public Object getUserAllNewsTypeProportion(@RequestParam(defaultValue = "7") Integer n
+    ) {
+        return Common.decorateReturnObject(newsService.getUserAllNewsTypeProportion(n));
     }
 
     /**

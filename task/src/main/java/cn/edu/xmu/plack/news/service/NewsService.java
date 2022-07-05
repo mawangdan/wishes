@@ -144,6 +144,16 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
         List<Map<String, Object>> maps = this.listMaps(lambdaQueryWrapper);
         return new ReturnObject(maps);
     }
+//
+//
+//    public ReturnObject getNewsCountByDay(Integer n) {
+//        log.info("getNewsAddition now Time: {}", LocalDate.now());
+//        QueryWrapper<News> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.select("CONVERT(gmt_create,date) as date, COUNT(1) as count");
+//        queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
+//        queryWrapper.groupBy("date");
+//        return new ReturnObject(this.listMaps(queryWrapper));
+//    }
 
     public ReturnObject getNewsAddition(Integer n) {
         log.info("getNewsAddition now Time: {}", LocalDate.now());
@@ -157,5 +167,15 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
     public ReturnObject deleteNews(Long newsId) {
         this.removeById(newsId);
         return ReturnObject.OK_RET;
+    }
+
+
+    public ReturnObject getUserAllNewsTypeProportion(Integer n) {
+        QueryWrapper<News> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("news_type as newsType, SUM(browse_count) as browseCount, SUM(favor_count) as favorCount, SUM(collect_count) as collecctCount");
+//        queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
+        queryWrapper.groupBy("news_type");
+        List<Map<String, Object>> maps = this.listMaps(queryWrapper);
+        return new ReturnObject(maps);
     }
 }
