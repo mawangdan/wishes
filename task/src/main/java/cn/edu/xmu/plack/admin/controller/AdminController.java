@@ -26,7 +26,7 @@ public class AdminController {
     public Object login(@RequestBody AdminVo adminVo) {
         LambdaQueryWrapper<Admin> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Admin::getUserName, adminVo.getUserName());
-        lambdaQueryWrapper.eq(Admin::getUserName, adminVo.getUserName());
+        lambdaQueryWrapper.eq(Admin::getPassword, adminVo.getPassword());
         Admin admin = adminService.getOne(lambdaQueryWrapper);
         ReturnObject returnObject;
         if (admin == null) {

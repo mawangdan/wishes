@@ -139,7 +139,7 @@ public class NewsController {
     @GetMapping("/news/category")
     public Object getAllNewsCategory() {
         EnumSet<News.NewsType> enumSet = EnumSet.allOf(News.NewsType.class);
-        List<CategoryRetVo> newsTypeList = enumSet.stream().map(x -> new CategoryRetVo(x.name(), x.getDesc())).collect(Collectors.toUnmodifiableList());
+        List<CategoryRetVo> newsTypeList = enumSet.stream().map(x -> new CategoryRetVo(x.name(), x.name())).collect(Collectors.toUnmodifiableList());
         return ResponseUtil.ok(newsTypeList);
     }
 
