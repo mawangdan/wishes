@@ -28,7 +28,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://47.99.200.3:3306/wishes?serverTimezone=GMT%2B8
+    url: jdbc:mysql://36.133.76.148:3306/wishes?serverTimezone=GMT%2B8
     username: dbuser
     password: 12345678
     druid:
