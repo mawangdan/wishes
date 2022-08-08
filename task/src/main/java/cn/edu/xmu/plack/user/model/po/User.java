@@ -10,14 +10,6 @@ import lombok.experimental.Accessors;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author bwly
- * @since 2022-02-07
- */
 @Data
 @Accessors(chain = true)
 @TableName("wishes_user")

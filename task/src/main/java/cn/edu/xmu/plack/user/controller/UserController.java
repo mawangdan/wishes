@@ -18,14 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * <p>
- *  前端控制器
- * </p>
- *
- * @author bwly
- * @since 2022-02-07
- */
 @RestController
 @RequestMapping(value = "/", produces = "application/json;charset=UTF-8")
 public class UserController {
@@ -70,17 +62,6 @@ public class UserController {
         return Common.decorateReturnObject(returnObject);
     }
 
-
-    /**
-     * 用户登出
-     * @return
-     */
-    @ApiOperation(value = "用户登出")
-    @PostMapping("/user/logout")
-    public Object logout() {
-        return Common.decorateReturnObject(new ReturnObject());
-    }
-
     /**
      * 用户查询信息
      * @return
@@ -112,27 +93,7 @@ public class UserController {
         Long userId = UserInfoUtil.getUserId();
         return Common.decorateReturnObject(userService.changeUserInfo(userId,vo));
     }
-//
-//
-//    @ApiOperation(value = "用户重置密码")
-//    @ApiImplicitParams(value={
-//            @ApiImplicitParam(paramType = "body", dataType = "PasswordResetVo", name = "vo", value = "用户名", required = true)
-//    })
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 0, message = "成功")
-//    })
-//    @PutMapping("/password/reset")
-//    public Object ResetPassword(@Validated @RequestBody PasswordResetVo vo,
-//                                BindingResult bindingResult)
-//    {
-//        Object o = Common.processFieldErrors(bindingResult, httpServletResponse);
-//        if(null!=o){
-//            return o;
-//        }
-//        return Common.decorateReturnObject(userService.ResetUserPassword(vo));
-//    }
-//
-//
+
     /**
      * 修改用户密码
      * @param vo

@@ -1,7 +1,5 @@
 package cn.edu.xmu.plack.user.service.impl;
 
-import cn.edu.xmu.plack.core.util.JwtHelper;
-import cn.edu.xmu.plack.core.util.RedisUtil;
 import cn.edu.xmu.plack.core.util.ReturnNo;
 import cn.edu.xmu.plack.core.util.ReturnObject;
 import cn.edu.xmu.plack.user.mapper.UserMapper;
@@ -14,36 +12,15 @@ import cn.edu.xmu.plack.user.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 
 import static cn.edu.xmu.plack.core.util.Common.cloneVo;
 
-/**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author bwly
- * @since 2022-02-07
- */
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-    private final static String USER_KEY="user_%d";
-    private static final String CAPTCHA_KEY = "cap_%s";
-
-
-    private static JwtHelper jwtHelper = new JwtHelper();
-
-    @Autowired
-    private RedisUtil redisUtil;
-
-
-
-    @Transactional(rollbackFor = Exception.class)
     public ReturnObject registerUser(UserVo userVo) {
         try {
             //判断是否可以注册
@@ -66,9 +43,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             User user = cloneVo(userVo, User.class);
             save(user);
-//            String userEmail = userVo.getEmail();
-//            String captcha = createCaptcha(userVo);
-//            sendEmail(captcha, userEmail);
             return new ReturnObject();
         }
         catch (Exception e) {
@@ -77,26 +51,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
-
-
-
-    private String getRandomString(int length) {
-        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        Random random = new Random();
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(str.length());
-            sb.append(str.charAt(number));
-        }
-        return sb.toString();
-    }
-
-
-
-
-
-
-    @Transactional(readOnly = true)
     public ReturnObject getUserInfo(Long userId) {
         try {
             User user = getById(userId);
@@ -107,7 +61,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public ReturnObject changeUserInfo(Long userId, SimpleUserVo vo) {
         try {
             User user = new User();
@@ -125,8 +78,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public User getUserByName(String username) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getUserName, username);
-        User user = this.getOne(lambdaQueryWrapper);
-        return user;
+        return this.getOne(lambdaQueryWrapper);
     }
 
     @Override
@@ -136,7 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             lambdaQueryWrapper.eq(User::getUserName, username);
             User user = this.getOne(lambdaQueryWrapper);
             if (user == null) {
-                return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "该用户未注册");
+                return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "用户不存在");
             }
             if (!user.getPassword().equals(vo.getOldpassword())) {
                 return new ReturnObject(ReturnNo.CUSTOMER_PASSWORDWRONG);
@@ -156,7 +108,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             lambdaQueryWrapper.eq(User::getUserName, vo.getUserName());
             User user = this.getOne(lambdaQueryWrapper);
             if (user == null) {
-                return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "该用户未注册");
+                return new ReturnObject(ReturnNo.RESOURCE_ID_NOTEXIST, "用户不存在");
             }
             if (!user.getPassword().equals(vo.getPassword())) {
                 return new ReturnObject(ReturnNo.CUSTOMER_PASSWORDWRONG);
