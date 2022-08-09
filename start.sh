@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup java -jar ./task/target/task-0.0.1-SNAPSHOT.jar >> ./logs/task.out &
+nohup java -jar ./plack/target/plack-0.0.1-SNAPSHOT.jar >> ./logs/plack.out &

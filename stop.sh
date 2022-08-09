@@ -7,4 +7,4 @@ function killPro() {
           echo "Send shutdown request to ${name}(${pid}) OK"
   fi
 }
-killPro "task"
+killPro "plack"
