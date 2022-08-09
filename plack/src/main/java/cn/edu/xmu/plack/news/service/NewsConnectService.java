@@ -1,5 +1,6 @@
 package cn.edu.xmu.plack.news.service;
 
+import cn.edu.xmu.plack.core.model.BaseEntity;
 import cn.edu.xmu.plack.core.util.ReturnNo;
 import cn.edu.xmu.plack.core.util.ReturnObject;
 import cn.edu.xmu.plack.news.mapper.NewsConnectMapper;
@@ -43,11 +44,12 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
 
     private ReturnObject<List<NewsConnect>> listNewsConnectByExample(NewsConnect exampleNewsConnect){
         LambdaQueryWrapper<NewsConnect> queryWrapper = getQueryWrapperByNewsConnect(exampleNewsConnect);
+        queryWrapper.orderByDesc(NewsConnect::getGmtCreate);
         List<NewsConnect> news = baseMapper.selectList(queryWrapper);
         return new ReturnObject<>(news);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ReturnObject liulan(Long userId,Long newsId){
         NewsConnect newsConnect=NewsConnect.builder()
                 .connectType("浏览")
@@ -62,6 +64,8 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
         newsService.update(lambdaUpdateWrapper);
         return new ReturnObject();
     }
+
+    @Transactional(rollbackFor = Exception.class)
     public ReturnObject shouCang(Long userId,Long newsId){
         NewsConnect newsConnect=NewsConnect.builder()
                 .connectType("收藏")
@@ -79,6 +83,8 @@ public class NewsConnectService extends ServiceImpl<NewsConnectMapper, NewsConne
         newsService.update(lambdaUpdateWrapper);
         return new ReturnObject();
     }
+
+    @Transactional(rollbackFor = Exception.class)
     public ReturnObject xiHuan(Long userId,Long newsId){
         NewsConnect newsConnect=NewsConnect.builder()
                 .connectType("喜欢")

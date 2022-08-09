@@ -58,7 +58,7 @@ public class NewsController {
     public Object getNewsallpageById(@RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "10") Integer pageSize
     ){
-        return Common.decorateReturnObject(newsService.getNewsallpageById(page,pageSize));
+        return Common.decorateReturnObject(newsService.getNewsPage(page,pageSize));
     }
 
     @ApiOperation(value = "查找指定类型新闻")

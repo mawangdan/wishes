@@ -53,27 +53,24 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
         return queryWrapper;
     }
     public ReturnObject listNewsByExampleAndPage(News exampleNews, Integer page, Integer pageSize) {
-        // get data
         Page<News> taskPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<News> queryWrapper = getQueryWrapperByNews(exampleNews);
+        queryWrapper.orderByDesc(News::getGmtCreate);
         Page<News> newsPage = this.baseMapper.selectPage(taskPage, queryWrapper);
         return new ReturnObject(newsPage);
     }
-    public ReturnObject listNewsByExampleAndPage(LambdaQueryWrapper<News> queryWrapper, Integer page, Integer pageSize) {
-        // get data
-        Page<News> taskPage = new Page<>(page, pageSize);
-        Page<News> newsPage = this.baseMapper.selectPage(taskPage, queryWrapper);
-        return new ReturnObject(newsPage);
-    }
+
     public ReturnObject listNewsByExample(News exampleNews){
         LambdaQueryWrapper<News> queryWrapper = getQueryWrapperByNews(exampleNews);
+        queryWrapper.orderByDesc(News::getGmtCreate);
         List<News> news = baseMapper.selectList(queryWrapper);
         return new ReturnObject(news);
     }
 
-    public ReturnObject getNewsallpageById(Integer page, Integer pageSize) {
+    public ReturnObject getNewsPage(Integer page, Integer pageSize) {
         Page<News> taskPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<News> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(News::getGmtCreate);
         Page<News> newsPage = this.baseMapper.selectPage(taskPage, queryWrapper);
         return new ReturnObject(newsPage);
     }
@@ -104,6 +101,12 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
             queryWrapperByNews.orderByDesc(News::getCollectCount);
         }
         return listNewsByExampleAndPage(queryWrapperByNews, page, pageSize);
+    }
+
+    private ReturnObject listNewsByExampleAndPage(LambdaQueryWrapper<News> queryWrapper, Integer page, Integer pageSize) {
+        Page<News> taskPage = new Page<>(page, pageSize);
+        Page<News> newsPage = this.baseMapper.selectPage(taskPage, queryWrapper);
+        return new ReturnObject(newsPage);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -172,8 +175,8 @@ public class NewsService extends ServiceImpl<NewsMapper, News>{
 
     public ReturnObject getUserAllNewsTypeProportion(Integer n) {
         QueryWrapper<News> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("news_type as newsType, SUM(browse_count) as browseCount, SUM(favor_count) as favorCount, SUM(collect_count) as collecctCount");
-//        queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
+        queryWrapper.select("news_type as newsType, SUM(browse_count) as browseCount, SUM(favor_count) as favorCount, SUM(collect_count) as collectCount");
+        queryWrapper.ge("gmt_create", LocalDate.now().minusDays(n - 1));
         queryWrapper.groupBy("news_type");
         List<Map<String, Object>> maps = this.listMaps(queryWrapper);
         return new ReturnObject(maps);
