@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>cn.edu.xmu</groupId>
-    <artifactId>plack</artifactId>
+    <artifactId>plack-all</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <name>plack</name>
@@ -32,7 +32,7 @@
 
     <modules>
         <module>core</module>
-        <module>task</module>
+        <module>plack</module>
     </modules>
 
     <dependencyManagement>

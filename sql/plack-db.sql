@@ -1,0 +1,8 @@
+CREATE DATABASE IF NOT EXISTS plack DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_0900_ai_ci;
+
+CREATE USER 'dbuser'@'localhost' IDENTIFIED BY '12345678';
+CREATE USER 'dbuser'@'%' IDENTIFIED BY '12345678';
+
+GRANT ALL ON plack.* TO 'dbuser'@'localhost';
+GRANT ALL ON plack.* TO 'dbuser'@'%';
+FLUSH PRIVILEGES;

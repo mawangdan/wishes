@@ -1,3 +1,0 @@
-mvn install:install-file -Dfile=ecloud-sdk-ocr-1.5.3-jar-with-dependencies.jar -DgroupId=com.chinamobile.ecloud -DartifactId=ecloud-sdk-ocr -Dversion=1.0.0 -Dpackaging=jar
-
-nohup java -jar task-1.0-SNAPSHOT.jar >msg.log 2>&1 &
